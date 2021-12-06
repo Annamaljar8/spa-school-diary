@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
     ];
 
     /**
@@ -41,4 +42,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    
+    /**
+     * Get the role record associated with the user.
+     */
+    public function role()
+    {
+        return $this->hasOne('App\Models\Role', 'id', 'role_id');
+    }
 }
