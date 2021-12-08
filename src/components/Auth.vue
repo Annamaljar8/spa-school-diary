@@ -52,7 +52,13 @@ import axios from 'axios';
         })
         .then(function (response) {
           console.log(response);
-          self.$router.push('about')
+        let token = response.data.data.token;
+        axios.defaults.headers.common = {
+            'Accept': 'application/json',
+            "Content-type": "application/json",
+            'Authorization': `Bearer ${token}`
+        }
+          //self.$router.push('about')
         })
         .catch(function (error) {
           console.log(error);
