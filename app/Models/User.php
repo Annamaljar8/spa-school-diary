@@ -48,6 +48,14 @@ class User extends Authenticatable
      */
     public function role()
     {
-        return $this->hasOne('App\Models\Role', 'id', 'role_id');
+        return $this->hasOne('App\Models\Role', 'id', 'role_id')->first();
+    }
+    
+    /**
+     * Get the language record associated with the user.
+     */
+    public function language()
+    {
+        return $this->hasOne('App\Models\Language', 'id', 'language_id')->first();
     }
 }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\User;
+use App\Models\Language;
+use App\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Validator;
    
@@ -31,6 +33,17 @@ class RegisterController extends BaseController
    
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
+        if(Auth::user()->role()->name == 'admin'){
+            $role = Role::where('name','teacher')->first();
+            $input['role_id'] = $role->id;
+        }
+        if(Auth::user()->role()->name == 'teacher'){
+            $role = Role::where('name','pupil')->first();
+            $input['role_id'] = $role->id;
+        }
+        if(Auth::user()->role()->name == 'pupil'){
+            return $this->sendError('unauthorized action');
+        }
         $user = User::create($input);
         $success['token'] =  $user->createToken('SchoolDiary')->plainTextToken;
         $success['name'] =  $user->name;
@@ -49,8 +62,25 @@ class RegisterController extends BaseController
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
             $user = Auth::user(); 
             $success['token'] =  $user->createToken('SchoolDiary')->plainTextToken; 
-            $success['name'] =  $user->name;
-   
+            $success['user'] =  [
+                'type' => $user->role()->name,
+                'name' => $user->name,
+                'avatar' => ($user->avatar != '') ? $user->avatar : 'data:image/jpeg;base64,'.env('USER_AVATAR', ''),
+                'language' => [
+                    'preferlanguage' => $user->language()->language,
+                    'lang' => $user->language()->lang,
+                    'icon' => $user->language()->ico
+                ]
+            ];
+            $languages = Language::all();
+            foreach ($languages as $language) {
+                $success['languages'][] = [
+                    'name' => $language->language,
+                    'lang' => $language->lang,
+                    'icon' => $language->ico
+                ];
+            }
+            
             return $this->sendResponse($success, 'User login successfully.');
         } 
         else{ 
