@@ -36,13 +36,13 @@ class RegisterController extends BaseController
         if(Auth::user()->role()->name == 'admin'){
             $role = Role::where('name','teacher')->first();
             $input['role_id'] = $role->id;
-        }
-        if(Auth::user()->role()->name == 'teacher'){
-            $role = Role::where('name','pupil')->first();
-            $input['role_id'] = $role->id;
-        }
-        if(Auth::user()->role()->name == 'pupil'){
-            return $this->sendError('unauthorized action');
+        } else {
+            if(Auth::user()->role()->name == 'teacher'){
+                $role = Role::where('name','pupil')->first();
+                $input['role_id'] = $role->id;
+            } else {
+                return $this->sendError('unauthorized action');
+            }
         }
         $user = User::create($input);
         $success['token'] =  $user->createToken('SchoolDiary')->plainTextToken;
