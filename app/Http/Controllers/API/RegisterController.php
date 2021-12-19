@@ -45,8 +45,9 @@ class RegisterController extends BaseController
             }
         }
         $user = User::create($input);
-        $success['token'] =  $user->createToken('SchoolDiary')->plainTextToken;
-        $success['name'] =  $user->name;
+        //$success['token'] =  $user->createToken('SchoolDiary')->plainTextToken;
+        //$success['name'] =  $user->name;
+        $success = '';
    
         return $this->sendResponse($success, 'User register successfully.');
     }
