@@ -2,32 +2,50 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios';
 import * as types from './types';
+import router from '../router/index';
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    
+    userData: [],
+    languagesData: [],
+    success: false
+  },
+  getters: {
+    [types.STATUS]: (state) => state.success,
+    [types.USER_DATA]: (state) => state.userData,
   },
   mutations: {
+    [types.GET_USER]: (state, payload) => {
+      state.userData = payload;
+      console.log("payload", payload)
+    },
+    [types.GET_LANGUAGES]: (state, payload) => {
+      state.languagesData = payload;
+    },
+    [types.GET_STATUS]: (state, payload) => {
+      state.success = payload;
+    },
   },
   actions: {
     [types.GET_USER]: async ({ commit, state }, payload) => {
-      // let self = this;
-      console.log(payload)
-      axios.post('/login', {
+      
+      await axios.post('/login', {
         email: payload.email,
         password: payload.password
       })
       .then(function (response) {
-        console.log(response);
-      let token = response.data.data.token;
-      axios.defaults.headers.common = {
-          'Accept': 'application/json',
-          "Content-type": "application/json",
-          'Authorization': `Bearer ${token}`
-      }
-        //self.$router.push('about')
+        commit(types.GET_USER, response.data.data.user)
+        commit(types.GET_LANGUAGES, response.data.data.languages)
+        commit(types.GET_STATUS, response.data.success)
+        let token = response.data.data.token;
+        axios.defaults.headers.common = {
+            'Accept': 'application/json',
+            "Content-type": "application/json",
+            'Authorization': `Bearer ${token}`
+        }
+        router.push('about')
       })
       .catch(function (error) {
         console.log(error);
@@ -38,6 +56,7 @@ export default new Vuex.Store({
       })
       .then(function (response) {
         console.log(response);
+        router.push('/')
       })
       .catch(function (error) {
         console.log(error);

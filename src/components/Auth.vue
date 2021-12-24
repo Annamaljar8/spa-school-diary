@@ -38,8 +38,14 @@ import { mapActions, mapMutations, mapGetters } from 'vuex';
 
     data: () => ({
       email: '',
-      password: ''
+      password: '',
+      
     }),
+    computed: {
+       ...mapGetters ({
+        status: types.STATUS,
+      }),
+    },
     methods: {
       ...mapActions ({
         getUser: types.GET_USER,
@@ -50,9 +56,18 @@ import { mapActions, mapMutations, mapGetters } from 'vuex';
           email: this.email, 
           password: this.password
           });
+        //  this.checkStatus();
+        //  this.$router.push('about')
       },
       logOut(){
         this.deleteUser();
+      }
+    },
+    watch: {
+      checkStatus(){
+        if(this.status == true){
+this.$router.push('about')
+        }
       }
     }
   }
