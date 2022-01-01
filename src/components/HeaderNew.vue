@@ -38,8 +38,8 @@
       </v-btn>
       <template v-slot:extension>
         <v-tabs align-with-title>
-          <v-tab class="logout-btn"><router-link to="/about">About</router-link></v-tab>
-          <v-tab>Tab 2</v-tab>
+          <v-tab class="header-new-tab"><router-link to="/dashboard">Calendar</router-link></v-tab>
+          <v-tab class="header-new-tab"><router-link to="/library">Library</router-link></v-tab>
           <v-tab>Tab 3</v-tab>
         </v-tabs>
       </template>
@@ -49,7 +49,7 @@
       class="overflow-y-auto"
       max-height="600"
     >
-      <v-container style="height: 1000px;"></v-container>
+      <v-container style="height: 24vh;"></v-container>
     </v-sheet>
   </v-card>
   </div>
@@ -89,8 +89,8 @@ import { mapActions, mapMutations, mapGetters } from 'vuex';
   border-radius: 50%;
   background-color: aliceblue;
 }
-.logout-btn{
-  background-color: aliceblue!important;
-  color: blueviolet !important;
+.v-application a{
+  color: aliceblue!important;
+  text-decoration: none!important;;
 }
 </style>

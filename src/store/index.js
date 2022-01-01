@@ -45,7 +45,7 @@ export default new Vuex.Store({
             "Content-type": "application/json",
             'Authorization': `Bearer ${token}`
         }
-        router.push('about')
+        router.push('dashboard')
       })
       .catch(function (error) {
         console.log(error);

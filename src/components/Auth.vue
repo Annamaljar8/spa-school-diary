@@ -66,7 +66,7 @@ import { mapActions, mapMutations, mapGetters } from 'vuex';
     watch: {
       checkStatus(){
         if(this.status == true){
-this.$router.push('about')
+          this.$router.push('dashboard')
         }
       }
     }
