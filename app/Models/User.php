@@ -59,4 +59,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne('App\Models\Language', 'id', 'language_id')->first();
     }
+    
+    /**
+     * Get the profile record associated with the user.
+     */
+    public function profile()
+    {
+        return $this->hasOne('App\Models\Profile', 'user_id', 'id')->first();
+    }
 }
