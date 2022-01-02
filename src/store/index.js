@@ -19,7 +19,6 @@ export default new Vuex.Store({
   mutations: {
     [types.GET_USER]: (state, payload) => {
       state.userData = payload;
-      console.log("payload", payload)
     },
     [types.GET_LANGUAGES]: (state, payload) => {
       state.languagesData = payload;
@@ -29,8 +28,7 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    [types.GET_USER]: async ({ commit, state }, payload) => {
-      
+    [types.GET_USER]: async ({ commit }, payload) => {
       await axios.post('/login', {
         email: payload.email,
         password: payload.password
@@ -61,7 +59,22 @@ export default new Vuex.Store({
       .catch(function (error) {
         console.log(error);
       });
-    }
+    },
+    [types.REGISTER_USER]: async ({ commit, dispatch }, payload) => {
+      await axios.post('/register', {
+        name: payload.name,
+        email: payload.email,
+        password: payload.password,
+        c_password: payload.c_password
+      })
+      .then(function (response) {
+        console.log(response)
+        // dispatch
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
   },
   modules: {
   }

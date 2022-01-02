@@ -1,32 +1,25 @@
 <template>
-<form>
-    <v-text-field
-      v-model="email"
-      label="E-mail"
-      required
-    ></v-text-field>
-    <v-text-field
-      v-model="password"
-      label="Password"
-      required
-      type="password"
-    ></v-text-field>
-    
-  
-    <v-btn
-      class="mr-4"
-      @click="submit()"
-    >
-      submit
-    </v-btn>
-    <v-btn
-      class="mr-4"
-      @click="logOut"
-    >
-      log out
-    </v-btn>
-    
-  </form>
+  <div class="user-table-form">
+    <form>
+      <v-text-field
+        v-model="email"
+        label="E-mail"
+        required
+      ></v-text-field>
+      <v-text-field
+        v-model="password"
+        label="Password"
+        required
+        type="password"
+      ></v-text-field>
+      <v-btn
+        class="mr-4"
+        @click="submit()"
+      >
+        sign in
+      </v-btn>
+    </form>
+  </div>
 </template>
 
 <script>

@@ -37,10 +37,10 @@
         log out
       </v-btn>
       <template v-slot:extension>
-        <v-tabs align-with-title>
+        <v-tabs >
           <v-tab class="header-new-tab"><router-link to="/dashboard">Calendar</router-link></v-tab>
           <v-tab class="header-new-tab"><router-link to="/library">Library</router-link></v-tab>
-          <v-tab>Tab 3</v-tab>
+          <v-tab class="header-new-tab"><router-link to="/users">Users</router-link></v-tab>
         </v-tabs>
       </template>
     </v-app-bar>
@@ -56,11 +56,10 @@
 </template>
 
 <script>
-import axios from 'axios';
 import * as types from '@/store/types'; 
 import { mapActions, mapMutations, mapGetters } from 'vuex';
   export default {
-    name: 'Header',
+    name: 'HeaderNew',
 
     data: () => ({
      
