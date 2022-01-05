@@ -21,8 +21,9 @@ class UserController extends BaseController
      */
     public function __construct()
     {
-        $user = Auth::user();
-        \App::setLocale($user->language()->lang);
+        //$user = User::find(Auth::user()->id);
+        //$language = Language::find($user->language_id);
+        \App::setLocale('en');//$language->lang);
     }
     
     public function users(Request $request)
