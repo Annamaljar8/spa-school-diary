@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Language;
 use App\Models\Role;
+use App\Models\Profile;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use Illuminate\Support\Facades\Lang;
@@ -40,8 +41,27 @@ class UserController extends BaseController
         return $this->sendResponse($success, 'Users get successfully.');
     }
     
-    public function user(Request $request)
+    public function user(User $user, Request $request)
     {
-        
+        $profile = $user->profile();
+        $success = (object) array(
+            'id' => $user->id,
+            'name' => $user->name,
+            'parentsName' => (object) array(
+                'motherName' => $profile->motherName,
+                'fatherName' => $profile->fatherName
+            ),
+            'parentsPhoneNumber' => (object) array(
+                'motherPhone' => $profile->motherPhone,
+                'fatherPhone' => $profile->fatherPhone
+            ),
+            'parentsEmail' => (object) array(
+                'motherEmail' => $profile->motherEmail,
+                'fatherEmail' => $profile->fatherEmail
+            ),
+            'address' => $profile->address,
+            'description' => $profile->description
+        );
+        return $this->sendResponse($success, 'User get successfully.');
     }
 }
