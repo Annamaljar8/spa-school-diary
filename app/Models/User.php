@@ -22,6 +22,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'role_id',
+        'maker_id',
+        'language_id',
     ];
 
     /**
@@ -57,5 +59,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function language()
     {
         return $this->hasOne('App\Models\Language', 'id', 'language_id')->first();
+    }
+    
+    /**
+     * Get the profile record associated with the user.
+     */
+    public function profile()
+    {
+        return $this->hasOne('App\Models\Profile', 'user_id', 'id')->first();
     }
 }

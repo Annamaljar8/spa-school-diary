@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\RegisterController;
+use App\Http\Controllers\API\UserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,7 +21,6 @@ Route::post('login', [RegisterController::class, 'login']);
 Route::middleware('auth:sanctum')->group( function () {
     Route::post('register', [RegisterController::class, 'register']);
     Route::post('logout', [RegisterController::class, 'logout']);
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+    Route::get('/user/{user}', [UserController::class, 'user']);
+    Route::get('/users', [UserController::class, 'users']);
 });

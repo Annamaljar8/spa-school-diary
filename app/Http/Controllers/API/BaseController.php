@@ -43,4 +43,12 @@ class BaseController extends Controller
 
         return response()->json($response, $code);
     }
+    
+    protected function toBool($val)
+    {
+        if($val)
+            return true;
+        else
+            return false;
+    }
 }

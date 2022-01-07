@@ -44,6 +44,7 @@ class RegisterController extends BaseController
                 return $this->sendError('unauthorized action');
             }
         }
+        $input['maker_id'] = Auth::user()->id;
         $user = User::create($input);
         //$success['token'] =  $user->createToken('SchoolDiary')->plainTextToken;
         //$success['name'] =  $user->name;
