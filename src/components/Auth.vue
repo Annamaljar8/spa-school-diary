@@ -1,6 +1,6 @@
 <template>
-  <div class="user-table-form">
-    <form>
+  <div class="log-in-form">
+    <form style="width:35vw!important">
       <v-text-field
         v-model="email"
         label="E-mail"
@@ -65,3 +65,10 @@ import { mapActions, mapMutations, mapGetters } from 'vuex';
     }
   }
 </script>
+
+<style>
+.log-in-form{
+  display: flex;
+  justify-content: center;
+}
+</style>

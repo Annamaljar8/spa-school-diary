@@ -1,45 +1,64 @@
 <template>
   <div>
-    <v-btn style="margin: 1rem!important" @click="formOpen = true">
+    <v-btn style="margin: 1rem!important" @click="formOpen = true" >
       Register Pupil
     </v-btn>
-    <div class="user-table-form">
-      <form v-if="formOpen" style="width:35vw!important">
-        <v-text-field
-        v-model="name"
-        label="Name"
-        required
-        ></v-text-field>
-        <v-text-field
-          v-model="email"
-          label="E-mail"
-          required
-        ></v-text-field>
-        <v-text-field
-          v-model="password"
-          label="Password"
-          required
-          type="password"
-        ></v-text-field>
-        <v-text-field
-          v-model="c_password"
-          label="Password"
-          required
-          type="password"
-        ></v-text-field>
-        <v-btn
-          class="mr-4"
-          @click="register()"
-        >
-          sign up
-        </v-btn>
-        <v-btn
-          class="mr-4"
-          @click="formOpen = false"
-        >
-          close
-        </v-btn>
-      </form>
+    <register-form :form-open="formOpen" @changeFormOpen="changeFormOpen"></register-form>
+      <v-data-table
+        :headers="headers"
+        
+        :items="usersResult"
+        hide-default-footer
+        disable-sort
+        color="#a9b1bd"
+      >
+      <template v-slot:body="{items}">
+        <tbody>
+          <tr v-for="(item,index) in items" :key="index">
+            <td>
+              <div></div>
+            </td>
+            <td>
+              <img  class="avatar-img" :src="item.avatar"/>
+            </td>
+            <td>
+              <div>{{ item.id }}</div>
+            </td>
+            <td>
+              <div>{{ item.name }}</div>
+            </td>
+            <!-- <td>
+              <div class="icons-color">
+                <v-icon v-if="item.gender === 'Female'"> {{ mdiGenderFemale }}</v-icon>
+                <v-icon v-if="item.gender === 'Male'">{{ mdiGenderMale }}</v-icon>
+                <v-icon v-if="item.gender === 'Genderless'">{{ mdiClose }}</v-icon>
+                <v-icon v-if="item.gender === 'unknown'">{{ mdiMinus }}</v-icon>
+                {{ item.gender }}
+              </div>
+            </td> -->
+            <td>
+              <div>{{ item.active }}</div>
+            </td>
+            <td>
+              <div>
+                <svg-icon type="mdi" :path="path"></svg-icon>
+              </div>
+            </td>
+            <!-- <td>
+              <v-btn v-if="!checkItem(item)" @click="addToFavorite(item)" class="btn-click" height=43 min-width=43><v-icon color="#11B0C8">{{ mdiStar }}</v-icon></v-btn>
+              <v-btn v-if="checkItem(item)" @click="deleteFromFavorite(item)" class="btn-unclick" height=43 min-width=43><v-icon color="white">{{ mdiStar }}</v-icon></v-btn>
+            </td> -->
+          </tr>
+        </tbody>
+      </template>
+    </v-data-table>
+    <div class="text-center pt-2">
+      <!-- <v-pagination 
+        color="#11B0C8"
+        v-model="currentPage"
+        :length="pagesLength"
+        :total-visible="7"
+      ></v-pagination> -->
     </div>
   </div>
 </template>
@@ -47,42 +66,87 @@
 <script>
 import * as types from '@/store/types'; 
 import { mapActions, mapMutations, mapGetters } from 'vuex';
+
+import SvgIcon from '@jamescoyle/vue-icon'
+import { mdiAccountMusicOutline } from '@mdi/js';
+
+import RegisterForm from './RegisterForm.vue';
+
   export default {
     name: 'UsersTable',
 
     data: () => ({
-      name: '',
-      email: '',
-      password: '',
-      c_password: '',
-      formOpen: false
+      formOpen: false,
+      headers: [
+        {
+          text: '',
+          value: '',
+        },
+        {
+          text: 'Avatar',
+          value: '',
+        },
+        {
+          text: 'User ID',
+          value: '',
+        },
+        {
+          text: 'Name',
+          value: '',
+        },
+        {
+          text: 'Status',
+          value: '',
+        },
+        {
+          text: 'Get Info',
+          value: '',
+        }
+      ],
+      path: mdiAccountMusicOutline,
+      // usersResult: {
+      //   avatar: '',
+      //   idd: '',
+      //   name: '',
+      //   active: null,
+      // },
     }),
+
+    components: {
+      RegisterForm,
+      SvgIcon
+    },
     computed: {
-      // ...mapGetters ({
-      //   userData: types.USER_DATA,
-      // }),
+      ...mapGetters ({
+        usersResult: types.USERS_RESULT,
+      }),
+     
     },
     methods: {
       ...mapActions ({
-        registerUser: types.REGISTER_USER,
+        getUsersResult: types.GET_USERS,
       }),
     
-      register(){
-        this.registerUser({
-          name: this.name,
-          email: this.email,
-          password: this.password,
-          c_password: this.c_password,
-        })
-        this.formOpen = false
+      changeFormOpen(val){
+        console.log(val)
+        this.formOpen = val
       }
+    },
+    mounted(){
+      this.getUsersResult()
     }
   }
 </script>
 
 <style>
-.user-table-form{
-  display: flex;
-  justify-content: center;
-}
+  .user-table-form{
+    display: flex;
+    justify-content: center;
+  }
+  .avatar-img{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: aliceblue;
+  }
 </style>

@@ -10,11 +10,13 @@ export default new Vuex.Store({
   state: {
     userData: [],
     languagesData: [],
-    success: false
+    success: false,
+    usersResult: []
   },
   getters: {
     [types.STATUS]: (state) => state.success,
     [types.USER_DATA]: (state) => state.userData,
+    [types.USERS_RESULT]: (state) => state.usersResult, 
   },
   mutations: {
     [types.GET_USER]: (state, payload) => {
@@ -25,6 +27,9 @@ export default new Vuex.Store({
     },
     [types.GET_STATUS]: (state, payload) => {
       state.success = payload;
+    },
+    [types.GET_USERS]: (state, payload) => {
+      state.usersResult = payload;
     },
   },
   actions: {
@@ -58,6 +63,7 @@ export default new Vuex.Store({
       })
       .catch(function (error) {
         console.log(error);
+        router.push('/')
       });
     },
     [types.REGISTER_USER]: async ({ commit, dispatch }, payload) => {
@@ -69,12 +75,24 @@ export default new Vuex.Store({
       })
       .then(function (response) {
         console.log(response)
-        // dispatch
+        // router.go(0)
+        console.log("here")
       })
       .catch(function (error) {
         console.log(error);
       });
     },
+    [types.GET_USERS]: async ({ commit }, payload) => {
+      await axios.get('/users')
+      .then(function (response) {
+        console.log(response)
+        commit(types.GET_USERS, response.data.data.users)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+
   },
   modules: {
   }
