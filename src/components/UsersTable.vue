@@ -40,8 +40,8 @@
               <div>{{ item.active }}</div>
             </td>
             <td>
-              <div>
-                <svg-icon type="mdi" :path="path"></svg-icon>
+              <div @click="dialogOpen = true">
+                <svg-icon type="mdi" :path="path"  ></svg-icon>
               </div>
             </td>
             <!-- <td>
@@ -52,6 +52,7 @@
         </tbody>
       </template>
     </v-data-table>
+    <user-profile :dialog-open="dialogOpen" @changeDialogOpen="changeDialogOpen"></user-profile>
     <div class="text-center pt-2">
       <!-- <v-pagination 
         color="#11B0C8"
@@ -71,12 +72,14 @@ import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiAccountMusicOutline } from '@mdi/js';
 
 import RegisterForm from './RegisterForm.vue';
+import UserProfile from './UserProfile.vue';
 
   export default {
     name: 'UsersTable',
 
     data: () => ({
       formOpen: false,
+      dialogOpen: false,
       headers: [
         {
           text: '',
@@ -114,13 +117,13 @@ import RegisterForm from './RegisterForm.vue';
 
     components: {
       RegisterForm,
+      UserProfile,
       SvgIcon
     },
-    computed: {
+    computed:{
       ...mapGetters ({
         usersResult: types.USERS_RESULT,
       }),
-     
     },
     methods: {
       ...mapActions ({
@@ -128,8 +131,10 @@ import RegisterForm from './RegisterForm.vue';
       }),
     
       changeFormOpen(val){
-        console.log(val)
         this.formOpen = val
+      },
+      changeDialogOpen(val){
+        this.dialogOpen = val
       }
     },
     mounted(){

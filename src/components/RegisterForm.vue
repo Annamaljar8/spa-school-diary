@@ -1,8 +1,5 @@
 <template>
   <div>
-    <!-- <v-btn style="margin: 1rem!important" @click="formOpen = true">
-      Register Pupil
-    </v-btn> -->
     <div class="user-table-form" >
       <form v-if="formOpen" style="width:35vw!important" >
         <v-text-field
