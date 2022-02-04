@@ -11,12 +11,14 @@ export default new Vuex.Store({
     userData: [],
     languagesData: [],
     success: false,
-    usersResult: []
+    usersResult: [],
+    userProfile: []
   },
   getters: {
     [types.STATUS]: (state) => state.success,
     [types.USER_DATA]: (state) => state.userData,
     [types.USERS_RESULT]: (state) => state.usersResult, 
+    [types.USER_PROFILE]: (state) => state.userProfile, 
   },
   mutations: {
     [types.GET_USER]: (state, payload) => {
@@ -30,6 +32,9 @@ export default new Vuex.Store({
     },
     [types.GET_USERS]: (state, payload) => {
       state.usersResult = payload;
+    },
+    [types.GET_USER_PROFILE]: (state, payload) => {
+      state.userProfile = payload;
     },
   },
   actions: {
@@ -66,6 +71,16 @@ export default new Vuex.Store({
         router.push('/')
       });
     },
+    [types.GET_USERS]: async ({ commit }, payload) => {
+      await axios.get('/users')
+      .then(function (response) {
+        console.log(response)
+        commit(types.GET_USERS, response.data.data.users)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
     [types.REGISTER_USER]: async ({ commit, dispatch }, payload) => {
       await axios.post('/register', {
         name: payload.name,
@@ -75,18 +90,50 @@ export default new Vuex.Store({
       })
       .then(function (response) {
         console.log(response)
-        // router.go(0)
-        console.log("here")
+        dispatch(types.GET_USERS)
+        console.log("here 93")
       })
       .catch(function (error) {
         console.log(error);
       });
     },
-    [types.GET_USERS]: async ({ commit }, payload) => {
-      await axios.get('/users')
+    [types.CREATE_AND_UPDATE_USER_PROFILE]: async ({ commit, dispatch }, payload) => {
+      console.log(payload)
+      await axios.put(`user/${payload.id}`, {
+        name: payload.name || '',
+        motherName: payload.motherName || '',
+        fatherName: payload.fatherName || '',
+        motherPhone: payload.motherPhone || '',
+        fatherPhone: payload.fatherPhone || '',
+        motherEmail: payload.motherEmail || '',
+        fatherEmail: payload.fatherEmail || '',
+        address: payload.address || '',
+        description: payload.description || '',
+      })
       .then(function (response) {
         console.log(response)
-        commit(types.GET_USERS, response.data.data.users)
+        // router.go(0)
+        console.log("here 105 ")
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    [types.GET_USER_PROFILE]: async ({ commit }, payload) => {
+      await axios.get(`user/${payload}`)
+      .then(function (response) {
+        console.log(response)
+        commit(types.GET_USER_PROFILE, response.data.data)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    [types.DELETE_USER_PROFILE]: async ({ commit }, payload) => {
+      await axios.delete(`user/${payload}`)
+      .then(function (response) {
+        console.log(response)
+        // commit(types.GET_USER_PROFILE, response.data.data)
       })
       .catch(function (error) {
         console.log(error);

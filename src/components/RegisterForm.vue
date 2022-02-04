@@ -28,7 +28,7 @@
           class="mr-4"
           @click="register()"
         >
-          sign up
+          add user
         </v-btn>
         <v-btn
           class="mr-4"

@@ -9,19 +9,20 @@
       prominent
       src="https://picsum.photos/1920/1080?random"
       fade-img-on-scroll
-      scroll-target="#scrolling-techniques-3"
     >
+      <router-link to="/dashboard" class="header-new">Calendar</router-link>
+      <router-link to="/library" class="header-new">Library</router-link>
+      <router-link to="/users" class="header-new">Users</router-link>
+      <v-toolbar-title style="width:100%; justify-content: center;display: flex;">School Diary</v-toolbar-title>
       <template v-slot:img="{ props }">
         <v-img
           v-bind="props"
           gradient="to top right, rgba(100,115,201,.7), rgba(25,32,72,.7)"
         ></v-img>
       </template>
-
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-      <v-app-bar-title>Title</v-app-bar-title>
-
+      <template v-slot:extension>
+       <div style="height: 5rem;"></div>
+      </template>
       <v-spacer></v-spacer>
         <img
           class="mr-4 avatar-img"
@@ -36,21 +37,14 @@
       >
         log out
       </v-btn>
-      <template v-slot:extension>
-        <v-tabs >
-          <v-tab class="header-new-tab"><router-link to="/dashboard">Calendar</router-link></v-tab>
-          <v-tab class="header-new-tab"><router-link to="/library">Library</router-link></v-tab>
-          <v-tab class="header-new-tab"><router-link to="/users">Users</router-link></v-tab>
-        </v-tabs>
-      </template>
     </v-app-bar>
-    <v-sheet
+    <!-- <v-sheet
       id="scrolling-techniques-3"
       class="overflow-y-auto"
-      max-height="600"
-    >
+      max-height="160"
+    > -->
       <v-container style="height: 24vh;"></v-container>
-    </v-sheet>
+    <!-- </v-sheet> -->
   </v-card>
   </div>
 </template>
@@ -62,7 +56,7 @@ import { mapActions, mapMutations, mapGetters } from 'vuex';
     name: 'HeaderNew',
 
     data: () => ({
-     
+      
     }),
      computed: {
        ...mapGetters ({
@@ -77,6 +71,9 @@ import { mapActions, mapMutations, mapGetters } from 'vuex';
       logOut(){
         this.deleteUser();
       }
+    },
+    watch: {
+      
     }
   }
 </script>
@@ -92,4 +89,11 @@ import { mapActions, mapMutations, mapGetters } from 'vuex';
   color: aliceblue!important;
   text-decoration: none!important;;
 }
+.header-new{
+  margin-right: 2rem;
+}
+.header-new.router-link-active{
+  color: #dfade9cc!important;
+}
+
 </style>

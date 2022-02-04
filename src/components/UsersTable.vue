@@ -1,12 +1,11 @@
 <template>
   <div>
-    <v-btn style="margin: 1rem!important" @click="formOpen = true" >
+    <v-btn style="margin: 1rem!important" @click="formOpen = true;" >
       Register Pupil
     </v-btn>
-    <register-form :form-open="formOpen" @changeFormOpen="changeFormOpen"></register-form>
-      <v-data-table
+    <register-form :form-open="formOpen" @changeFormOpen="changeFormOpen" ></register-form>
+      <v-data-table v-if="!formOpen"
         :headers="headers"
-        
         :items="usersResult"
         hide-default-footer
         disable-sort
@@ -40,8 +39,13 @@
               <div>{{ item.active }}</div>
             </td>
             <td>
-              <div @click="dialogOpen = true">
-                <svg-icon type="mdi" :path="path"  ></svg-icon>
+              <div @click="userProfile(item.id)">
+                <svg-icon type="mdi" :path="pathGet" ></svg-icon>
+              </div>
+            </td>
+            <td>
+              <div @click="deletedUserProfile(item.id)">
+                <svg-icon type="mdi" :path="pathDelete" ></svg-icon>
               </div>
             </td>
             <!-- <td>
@@ -52,6 +56,7 @@
         </tbody>
       </template>
     </v-data-table>
+    <modal-window :modal-open="modalOpen" @changeModalOpen="changeModalOpen" :is-delete-user-profile="isDeleteUserProfile" @cangeDeleteUserProfile="cangeDeleteUserProfile"></modal-window>
     <user-profile :dialog-open="dialogOpen" @changeDialogOpen="changeDialogOpen"></user-profile>
     <div class="text-center pt-2">
       <!-- <v-pagination 
@@ -70,9 +75,11 @@ import { mapActions, mapMutations, mapGetters } from 'vuex';
 
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiAccountMusicOutline } from '@mdi/js';
+import { mdiDeleteOutline } from '@mdi/js';
 
 import RegisterForm from './RegisterForm.vue';
 import UserProfile from './UserProfile.vue';
+import ModalWindow from './ModalWindow.vue';
 
   export default {
     name: 'UsersTable',
@@ -80,6 +87,9 @@ import UserProfile from './UserProfile.vue';
     data: () => ({
       formOpen: false,
       dialogOpen: false,
+      modalOpen: false,
+      isDeleteUserProfile: false,
+      currentId: 0,
       headers: [
         {
           text: '',
@@ -104,9 +114,14 @@ import UserProfile from './UserProfile.vue';
         {
           text: 'Get Info',
           value: '',
+        },
+        {
+          text: 'Delete User',
+          value: '',
         }
       ],
-      path: mdiAccountMusicOutline,
+      pathGet: mdiAccountMusicOutline,
+      pathDelete: mdiDeleteOutline,
       // usersResult: {
       //   avatar: '',
       //   idd: '',
@@ -118,6 +133,7 @@ import UserProfile from './UserProfile.vue';
     components: {
       RegisterForm,
       UserProfile,
+      ModalWindow,
       SvgIcon
     },
     computed:{
@@ -128,13 +144,34 @@ import UserProfile from './UserProfile.vue';
     methods: {
       ...mapActions ({
         getUsersResult: types.GET_USERS,
+        getUserProfile: types.GET_USER_PROFILE,
+        deleteUserProfile: types.DELETE_USER_PROFILE
       }),
     
       changeFormOpen(val){
-        this.formOpen = val
+        console.log('val', val)
+        this.formOpen = val;
       },
       changeDialogOpen(val){
         this.dialogOpen = val
+      },
+      changeModalOpen(val){
+        this.modalOpen = val
+      },
+      cangeDeleteUserProfile(val){
+        this.isDeleteUserProfile = val
+        if(val && this.currentId != 0){
+          this.deleteUserProfile(this.currentId)
+          this.getUsersResult()
+        }
+      },
+      userProfile(id){
+        this.dialogOpen = true;
+        this.getUserProfile(id)
+      },
+      deletedUserProfile(id){
+        this.currentId = id;
+        this.modalOpen = true;
       }
     },
     mounted(){

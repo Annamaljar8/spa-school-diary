@@ -24,6 +24,7 @@
                   outlined
                   rows="1"
                   row-height="15"
+                  v-model="userProfile.name"
                 ></v-textarea>
               </v-col>
                 <v-col
@@ -37,6 +38,7 @@
                   outlined
                   rows="1"
                   row-height="15"
+                  v-model="userProfile.age"
                 ></v-textarea>
               </v-col>
               <!--------------------------------------------> 
@@ -50,6 +52,7 @@
                   outlined
                   rows="1"
                   row-height="15"
+                  v-model="userProfile.motherName"
                 ></v-textarea>
               </v-col>
               <v-col cols="12"
@@ -61,6 +64,7 @@
                   outlined
                   rows="1"
                   row-height="15"
+                  v-model="userProfile.fatherName"
                 ></v-textarea>
               </v-col>
               <!--------------------------------------------> 
@@ -74,6 +78,7 @@
                   outlined
                   rows="1"
                   row-height="15"
+                  v-model="userProfile.motherPhone"
                 ></v-textarea>
               </v-col>
               <v-col cols="12"
@@ -85,6 +90,7 @@
                   outlined
                   rows="1"
                   row-height="15"
+                  v-model="userProfile.fatherPhone"
                 ></v-textarea>
               </v-col>
               <!--------------------------------------------> 
@@ -98,6 +104,7 @@
                   outlined
                   rows="1"
                   row-height="15"
+                  v-model="userProfile.motherEmail"
                 ></v-textarea>
               </v-col>
               <v-col cols="12"
@@ -109,30 +116,21 @@
                   outlined
                   rows="1"
                   row-height="15"
+                  v-model="userProfile.fatherEmail"
                 ></v-textarea>
               </v-col>
               <!--------------------------------------------> 
               <v-col cols="12"><h4>Adress</h4></v-col>
               <v-col cols="12"
-                    sm="6"
-                    md="8">
+                    sm="12"
+                    md="12">
                 <v-textarea
                   label="Adress"
                   auto-grow
                   outlined
                   rows="1"
                   row-height="15"
-                ></v-textarea>
-              </v-col>
-              <v-col cols="12"
-                    sm="6"
-                    md="4">
-                <v-textarea
-                  label="House/Flat"
-                  auto-grow
-                  outlined
-                  rows="1"
-                  row-height="15"
+                  v-model="userProfile.address"
                 ></v-textarea>
               </v-col>
               <!--------------------------------------------> 
@@ -144,6 +142,7 @@
                   outlined
                   rows="4"
                   row-height="30"
+                  v-model="userProfile.description"
                 ></v-textarea>
               </v-col>
             </v-row>
@@ -154,16 +153,16 @@
           <v-btn
             color="blue darken-1"
             text
-            @click="closeForm"
+            @click="updateUserProfile(userProfile)"
           >
-            Close
+            Save
           </v-btn>
           <v-btn
             color="blue darken-1"
             text
             @click="closeForm"
           >
-            Save
+            Close
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -172,17 +171,34 @@
 </template>
 
 <script>
+import * as types from '@/store/types'; 
+import { mapActions, mapMutations, mapGetters } from 'vuex';
+
   export default {
       data: () => ({
-        dialog: false,
+       
       }),
       props: {
         dialogOpen: Boolean
       },
-      methods: {
-        closeForm(){
-        this.$emit('changeDialogOpen', false)
+      computed: {
+        ...mapGetters ({
+          userProfile: types.USER_PROFILE,
+        }),
       },
+      methods: {
+        ...mapActions ({
+          createAndUpdateUserProfile: types.CREATE_AND_UPDATE_USER_PROFILE,
+        }),
+        closeForm(){
+          this.$emit('changeDialogOpen', false)
+        },
+        updateUserProfile(userProfile){
+        console.log('here 195 userProfile', userProfile)
+          this.createAndUpdateUserProfile(userProfile)
+          console.log('here 195')
+          this.closeForm()
+        }
       }
     }
 </script>

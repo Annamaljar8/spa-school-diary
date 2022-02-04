@@ -1,8 +1,10 @@
 <template>
-<div>
-   <v-container>
-    <auth />
-  </v-container>
+<div class="bg_auth">
+  <div class="bg_auth_opacity">
+    <v-container>
+      <auth />
+    </v-container>
+  </div>
 </div>
 </template>
 
@@ -30,3 +32,19 @@ export default {
   }
 }
 </script>
+
+<style>
+  .bg_auth{
+    width: 100vw;
+    height: 100vh;
+    background-image: url("../assets/bg_2.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .bg_auth_opacity{
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(226, 232, 236, 0.288);
+  }
+</style>
