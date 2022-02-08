@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-btn style="margin: 1rem!important" @click="formOpen = true;" >
-      Register Pupil
+      Register User
     </v-btn>
     <register-form :form-open="formOpen" @changeFormOpen="changeFormOpen" ></register-form>
       <v-data-table v-if="!formOpen"
@@ -26,15 +26,6 @@
             <td>
               <div>{{ item.name }}</div>
             </td>
-            <!-- <td>
-              <div class="icons-color">
-                <v-icon v-if="item.gender === 'Female'"> {{ mdiGenderFemale }}</v-icon>
-                <v-icon v-if="item.gender === 'Male'">{{ mdiGenderMale }}</v-icon>
-                <v-icon v-if="item.gender === 'Genderless'">{{ mdiClose }}</v-icon>
-                <v-icon v-if="item.gender === 'unknown'">{{ mdiMinus }}</v-icon>
-                {{ item.gender }}
-              </div>
-            </td> -->
             <td>
               <div>{{ item.active }}</div>
             </td>
@@ -48,10 +39,6 @@
                 <svg-icon type="mdi" :path="pathDelete" ></svg-icon>
               </div>
             </td>
-            <!-- <td>
-              <v-btn v-if="!checkItem(item)" @click="addToFavorite(item)" class="btn-click" height=43 min-width=43><v-icon color="#11B0C8">{{ mdiStar }}</v-icon></v-btn>
-              <v-btn v-if="checkItem(item)" @click="deleteFromFavorite(item)" class="btn-unclick" height=43 min-width=43><v-icon color="white">{{ mdiStar }}</v-icon></v-btn>
-            </td> -->
           </tr>
         </tbody>
       </template>
@@ -71,7 +58,7 @@
 
 <script>
 import * as types from '@/store/types'; 
-import { mapActions, mapMutations, mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiAccountMusicOutline } from '@mdi/js';
@@ -122,12 +109,6 @@ import ModalWindow from './ModalWindow.vue';
       ],
       pathGet: mdiAccountMusicOutline,
       pathDelete: mdiDeleteOutline,
-      // usersResult: {
-      //   avatar: '',
-      //   idd: '',
-      //   name: '',
-      //   active: null,
-      // },
     }),
 
     components: {
@@ -149,7 +130,6 @@ import ModalWindow from './ModalWindow.vue';
       }),
     
       changeFormOpen(val){
-        console.log('val', val)
         this.formOpen = val;
       },
       changeDialogOpen(val){
@@ -162,7 +142,6 @@ import ModalWindow from './ModalWindow.vue';
         this.isDeleteUserProfile = val
         if(val && this.currentId != 0){
           this.deleteUserProfile(this.currentId)
-          this.getUsersResult()
         }
       },
       userProfile(id){
@@ -172,7 +151,7 @@ import ModalWindow from './ModalWindow.vue';
       deletedUserProfile(id){
         this.currentId = id;
         this.modalOpen = true;
-      }
+      },
     },
     mounted(){
       this.getUsersResult()

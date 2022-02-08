@@ -1,81 +1,77 @@
 <template>
   <div style="width: 100vw;">
     <v-card class="overflow-hidden">
-    <v-app-bar
-      absolute
-      color="#6A76AB"
-      dark
-      shrink-on-scroll
-      prominent
-      src="https://picsum.photos/1920/1080?random"
-      fade-img-on-scroll
-    >
-      <router-link to="/dashboard" class="header-new">Calendar</router-link>
-      <router-link to="/library" class="header-new">Library</router-link>
-      <router-link to="/users" class="header-new">Users</router-link>
-      <v-toolbar-title style="width:100%; justify-content: center;display: flex;">School Diary</v-toolbar-title>
-      <template v-slot:img="{ props }">
-        <v-img
-          v-bind="props"
-          gradient="to top right, rgba(100,115,201,.7), rgba(25,32,72,.7)"
-        ></v-img>
-      </template>
-      <template v-slot:extension>
-       <div style="height: 5rem;"></div>
-      </template>
-      <v-spacer></v-spacer>
-        <img
-          class="mr-4 avatar-img"
-          :src="userData.avatar"
+      <div> 
+        <v-app-bar
+          absolute
+          color="#6A76AB"
+          dark
+          shrink-on-scroll
+          prominent
+          src="https://picsum.photos/1920/1080?random"
+          fade-img-on-scroll
         >
-        <div class="mr-4">
-          {{ userData.name }}
-        </div>
-        <v-btn
-        class="mr-4 logout-btn"
-        @click="logOut"
-      >
-        log out
-      </v-btn>
-    </v-app-bar>
-    <!-- <v-sheet
-      id="scrolling-techniques-3"
-      class="overflow-y-auto"
-      max-height="160"
-    > -->
-      <v-container style="height: 24vh;"></v-container>
-    <!-- </v-sheet> -->
+          <router-link to="/dashboard" class="header-new" v-if="(getUserType === 'teacher') || (getUserType === 'pupil')">Calendar</router-link>
+          <router-link to="/library" class="header-new" v-if="(getUserType === 'teacher') || (getUserType === 'pupil')">Library</router-link>
+          <router-link to="/users" class="header-new" >Users</router-link>
+          <v-toolbar-title style="width:100%; justify-content: center;display: flex;">School Diary</v-toolbar-title>
+          <template v-slot:img="{ props }">
+            <v-img
+              v-bind="props"
+              gradient="to top right, rgba(100,115,201,.7), rgba(25,32,72,.7)"
+            ></v-img>
+          </template>
+          <template v-slot:extension>
+            <div style="height: 5rem;"></div>
+          </template>
+          <v-spacer></v-spacer>
+          <div class="user-info">
+            <img
+              class="mr-4 avatar-img"
+              :src="userData.avatar"
+            >
+            <div class="mr-4" >
+              {{ userData.name }}
+            </div>
+            <v-btn
+            class="mr-4 logout-btn"
+            @click="logOut"
+          >
+            log out
+          </v-btn>
+          </div>
+        </v-app-bar>
+      </div>
+    <v-container style="height: 24vh;"></v-container>
   </v-card>
   </div>
 </template>
 
 <script>
 import * as types from '@/store/types'; 
-import { mapActions, mapMutations, mapGetters } from 'vuex';
-  export default {
-    name: 'HeaderNew',
+import { mapActions, mapGetters } from 'vuex';
+export default {
+  name: 'HeaderNew',
 
-    data: () => ({
-      
+  data: () => ({
+    
+  }),
+  computed: {
+    ...mapGetters ({
+      userData: types.USER_DATA,
+      getUserType: types.USER_TYPE,
     }),
-     computed: {
-       ...mapGetters ({
-        userData: types.USER_DATA,
-      }),
-    },
-    methods: {
-      ...mapActions ({
-        deleteUser: types.DELETE_USER,
-      }),
-     
-      logOut(){
-        this.deleteUser();
-      }
-    },
-    watch: {
-      
+  },
+  methods: {
+    ...mapActions ({
+      deleteUser: types.DELETE_USER,
+    }),
+    
+    logOut(){
+      this.deleteUser();
     }
-  }
+  },
+}
 </script>
 
 <style scoped>
@@ -95,5 +91,10 @@ import { mapActions, mapMutations, mapGetters } from 'vuex';
 .header-new.router-link-active{
   color: #dfade9cc!important;
 }
-
+.user-info{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  width: 60vw;
+}
 </style>

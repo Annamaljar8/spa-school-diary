@@ -172,7 +172,7 @@
 
 <script>
 import * as types from '@/store/types'; 
-import { mapActions, mapMutations, mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
   export default {
       data: () => ({
@@ -194,9 +194,7 @@ import { mapActions, mapMutations, mapGetters } from 'vuex';
           this.$emit('changeDialogOpen', false)
         },
         updateUserProfile(userProfile){
-        console.log('here 195 userProfile', userProfile)
           this.createAndUpdateUserProfile(userProfile)
-          console.log('here 195')
           this.closeForm()
         }
       }

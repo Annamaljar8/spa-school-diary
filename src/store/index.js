@@ -12,13 +12,37 @@ export default new Vuex.Store({
     languagesData: [],
     success: false,
     usersResult: [],
-    userProfile: []
+    userProfile: [],
+    calendarEvents: [
+      {
+        id: '1',
+        name: 'Lesson',
+        color: 'blue',
+        start:  new Date('2022-02-08T12:12:00').getTime(),
+        end: new Date('2022-02-08T12:19:00').getTime(),
+        details: 'Regular Lesson',
+        timed: false,
+        dialog: false,
+      },
+      {
+        id: '2',
+        name: 'Lesson',
+        color: 'red',
+        start: new Date('2022-02-09T12:12:00').getTime(),
+        end: new Date('2022-02-09T12:19:00').getTime(),
+        details: 'Overdue Lesson',
+        timed: false,
+        dialog: false,
+      }
+    ]
   },
   getters: {
     [types.STATUS]: (state) => state.success,
     [types.USER_DATA]: (state) => state.userData,
+    [types.USER_TYPE]: (state) => state.userData.type,
     [types.USERS_RESULT]: (state) => state.usersResult, 
     [types.USER_PROFILE]: (state) => state.userProfile, 
+    [types.CALENDAR_EVENTS]: (state) => state.calendarEvents, 
   },
   mutations: {
     [types.GET_USER]: (state, payload) => {
@@ -36,14 +60,19 @@ export default new Vuex.Store({
     [types.GET_USER_PROFILE]: (state, payload) => {
       state.userProfile = payload;
     },
+    [types.SET_CALENDAR_EVENTS]: (state, payload) => {
+      console.log('payload', payload)
+      state.calendarEvents =  payload;
+    },
   },
   actions: {
-    [types.GET_USER]: async ({ commit }, payload) => {
+    [types.GET_USER]: async ({ state, commit }, payload) => {
       await axios.post('/login', {
         email: payload.email,
         password: payload.password
       })
       .then(function (response) {
+        console.log("type user", response.data.data.user)
         commit(types.GET_USER, response.data.data.user)
         commit(types.GET_LANGUAGES, response.data.data.languages)
         commit(types.GET_STATUS, response.data.success)
@@ -53,7 +82,11 @@ export default new Vuex.Store({
             "Content-type": "application/json",
             'Authorization': `Bearer ${token}`
         }
-        router.push('dashboard')
+        if((response.data.success == true) && ((response.data.data.user.type === 'teacher') || (response.data.data.user.type  === 'pupil'))) {
+          router.push('dashboard')
+        } else if ((response.data.success == true) && (response.data.data.user.type  === 'admin')){
+          router.push('users')
+        }
       })
       .catch(function (error) {
         console.log(error);
@@ -63,7 +96,6 @@ export default new Vuex.Store({
       axios.post('/logout', {
       })
       .then(function (response) {
-        console.log(response);
         router.push('/')
       })
       .catch(function (error) {
@@ -74,7 +106,6 @@ export default new Vuex.Store({
     [types.GET_USERS]: async ({ commit }, payload) => {
       await axios.get('/users')
       .then(function (response) {
-        console.log(response)
         commit(types.GET_USERS, response.data.data.users)
       })
       .catch(function (error) {
@@ -89,16 +120,13 @@ export default new Vuex.Store({
         c_password: payload.c_password
       })
       .then(function (response) {
-        console.log(response)
         dispatch(types.GET_USERS)
-        console.log("here 93")
       })
       .catch(function (error) {
         console.log(error);
       });
     },
     [types.CREATE_AND_UPDATE_USER_PROFILE]: async ({ commit, dispatch }, payload) => {
-      console.log(payload)
       await axios.put(`user/${payload.id}`, {
         name: payload.name || '',
         motherName: payload.motherName || '',
@@ -112,8 +140,6 @@ export default new Vuex.Store({
       })
       .then(function (response) {
         console.log(response)
-        // router.go(0)
-        console.log("here 105 ")
       })
       .catch(function (error) {
         console.log(error);
@@ -122,24 +148,53 @@ export default new Vuex.Store({
     [types.GET_USER_PROFILE]: async ({ commit }, payload) => {
       await axios.get(`user/${payload}`)
       .then(function (response) {
-        console.log(response)
         commit(types.GET_USER_PROFILE, response.data.data)
       })
       .catch(function (error) {
         console.log(error);
       });
     },
-    [types.DELETE_USER_PROFILE]: async ({ commit }, payload) => {
+    [types.DELETE_USER_PROFILE]: async ({ dispatch }, payload) => {
       await axios.delete(`user/${payload}`)
       .then(function (response) {
         console.log(response)
-        // commit(types.GET_USER_PROFILE, response.data.data)
+        dispatch(types.GET_USERS)
       })
       .catch(function (error) {
         console.log(error);
       });
-    }
-
+    },
+    [types.GET_CALENDAR_EVENTS]: async ({ commit }, payload) => {
+      // await axios.get('/calendarEvents')
+      // .then(function (response) {
+        commit(types.SET_CALENDAR_EVENTS, [
+              {
+                id: '1',
+                name: 'Lesson',
+                color: 'blue',
+                start:  new Date('2022-02-08T12:12:00').getTime(),
+                end: new Date('2022-02-08T12:19:00').getTime(),
+                details: 'Regular Lesson',
+                timed: false,
+                dialog: false,
+              },
+              {
+                id: '2',
+                name: 'Lesson',
+                color: 'blue',
+                start: new Date('2022-02-09T12:12:00').getTime(),
+                end: new Date('2022-02-09T12:19:00').getTime(),
+                details: 'Overdue Lesson',
+                timed: false,
+                dialog: false,
+              }
+            ]
+          ) //response.data.data.users
+      // })
+      // .catch(function (error) {
+      //   console.log(error);
+      // });
+    },
   },
   modules: {
   }

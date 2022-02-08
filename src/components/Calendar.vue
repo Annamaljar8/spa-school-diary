@@ -78,13 +78,14 @@
           ref="calendar"
           v-model="value"
           color="primary"
+          
           :type="type"
           :events="events"
           :event-color="getEventColor"
           :event-ripple="false"
           locale="pl"
           :weekdays="weekdays"
-          @change="getEvents"
+          @change="getEventsFromPromise"
           @mousedown:event="startDrag"
           @mousedown:time="startTime"
           @mousemove:time="mouseMove"
@@ -94,6 +95,8 @@
           @click:more="viewDay"
           @click:date="viewDay"
         >
+        <!-- :now="today" 
+        -->
           <template v-slot:event="{ event, timed, eventSummary }">
             <div
               class="v-event-draggable"
@@ -153,8 +156,13 @@
 </template>
 
 <script>
-  export default {
+import * as types from '@/store/types'; 
+import { mapActions, mapGetters } from 'vuex';
+
+export default {
     data: () => ({
+      // today: new Date().toISOString().substr(1, 10),
+      // focus: new Date().toISOString().substr(1, 10),
       value: '',
       events: [],
       type: 'week',
@@ -169,7 +177,16 @@
       weekdays: [1, 2, 3, 4, 5, 6, 0],
       dragEvent: null,
       dragStart: null,
-      createEvent: null,
+      createEvent: {
+          id: null, // currentEditId
+          name: null,
+          color: null,
+          start: null,
+          end: null,
+          details: null,
+          timed: false,
+          dialog: false
+      },
       createStart: null,
       extendOriginal: null,
       selectedEvent: {},
@@ -177,6 +194,11 @@
       selectedOpen: false,
       
     }),
+    computed:{
+      ...mapGetters({
+        getCalendarEvents: types.CALENDAR_EVENTS,
+      })
+    },
     methods: {
       setToday () {
         this.value = ''
@@ -341,8 +363,16 @@
 
         nativeEvent.stopPropagation()
       },
+      getEventsFromPromise () {
+        console.log('getCalendarEvents',this.getCalendarEvents)
+        this.events = this.getCalendarEvents
+        //console.log(this.events)
+      },
     },
-  }
+    // mounted(){
+    //   this.getEventsFromPromise();
+    // }
+}
 </script>
 
 <style scoped lang="scss">

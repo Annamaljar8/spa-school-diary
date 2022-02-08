@@ -25,9 +25,8 @@
 </template>
 
 <script>
-import axios from 'axios';
 import * as types from '@/store/types'; 
-import { mapActions, mapMutations, mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
   export default {
     name: 'Auth',
 
@@ -39,6 +38,7 @@ import { mapActions, mapMutations, mapGetters } from 'vuex';
     computed: {
        ...mapGetters ({
         status: types.STATUS,
+        getUserType: types.USER_TYPE,
       }),
     },
     methods: {
@@ -51,18 +51,9 @@ import { mapActions, mapMutations, mapGetters } from 'vuex';
           email: this.email, 
           password: this.password
           });
-        //  this.checkStatus();
-        //  this.$router.push('about')
       },
       logOut(){
         this.deleteUser();
-      }
-    },
-    watch: {
-      checkStatus(){
-        if(this.status == true){
-          this.$router.push('dashboard')
-        }
       }
     }
   }
