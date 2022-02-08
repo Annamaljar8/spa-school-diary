@@ -8,4 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class Profile extends Model
 {
     use HasFactory;
+    
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var string[]
+     */
+    protected $fillable = [
+        'motherName',
+        'fatherName',
+        'motherPhone',
+        'fatherPhone',
+        'motherEmail',
+        'fatherEmail',
+        'address',
+        'description'
+    ];
 }

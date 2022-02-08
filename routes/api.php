@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\CalendarController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,5 +23,12 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('register', [RegisterController::class, 'register']);
     Route::post('logout', [RegisterController::class, 'logout']);
     Route::get('/user/{user}', [UserController::class, 'user']);
+    Route::put('/user/{user}', [UserController::class, 'updateUser']);
+    Route::delete('/user/{user}', [UserController::class, 'deleteUser']);
     Route::get('/users', [UserController::class, 'users']);
+    
+    Route::get('/calendarEvents',[CalendarController::class,'events']);
+    Route::post('/calendarEvent',[CalendarController::class,'create']);
+    Route::put('/calendarEvent/{event}',[CalendarController::class,'update']);
+    Route::delete('/calendarEvent/{event}',[CalendarController::class,'delete']);
 });
