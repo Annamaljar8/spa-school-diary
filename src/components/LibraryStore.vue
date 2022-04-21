@@ -21,10 +21,6 @@
             open-on-click
             transition
           >
-          <!-- 
-           
-            :load-children="usersResult"
-            :open.sync="open" -->
             <template v-slot:prepend="{ item }">
               <v-icon v-if="!item.children">
                 mdi-account
@@ -179,7 +175,7 @@ import ModalWindow from './ModalWindow.vue';
       },
     },
     mounted(){
-      
+      this.usersResult();
     }
   }
 </script>

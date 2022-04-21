@@ -44,6 +44,6 @@ export default {
   .bg_auth_opacity{
     width: 100vw;
     height: 100vh;
-    background-color: rgba(226, 232, 236, 0.288);
+    background-color: rgb(226 232 236 / 10%);
   }
 </style>

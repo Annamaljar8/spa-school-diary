@@ -13,28 +13,8 @@ export default new Vuex.Store({
     success: false,
     usersResult: [],
     userProfile: [],
-    calendarEvents: [
-      {
-        id: '1',
-        name: 'Lesson',
-        color: 'blue',
-        start:  new Date('2022-02-08T12:12:00').getTime(),
-        end: new Date('2022-02-08T12:19:00').getTime(),
-        details: 'Regular Lesson',
-        timed: false,
-        dialog: false,
-      },
-      {
-        id: '2',
-        name: 'Lesson',
-        color: 'red',
-        start: new Date('2022-02-09T12:12:00').getTime(),
-        end: new Date('2022-02-09T12:19:00').getTime(),
-        details: 'Overdue Lesson',
-        timed: false,
-        dialog: false,
-      }
-    ]
+    calendarEvents: [],
+    calendarEvent: null,
   },
   getters: {
     [types.STATUS]: (state) => state.success,
@@ -61,8 +41,10 @@ export default new Vuex.Store({
       state.userProfile = payload;
     },
     [types.SET_CALENDAR_EVENTS]: (state, payload) => {
-      console.log('payload', payload)
       state.calendarEvents =  payload;
+    },
+    [types.SET_UPDATE_CALENDAR_EVENT]: (state, payload) => {
+      state.calendarEvent =  payload;
     },
   },
   actions: {
@@ -72,7 +54,6 @@ export default new Vuex.Store({
         password: payload.password
       })
       .then(function (response) {
-        console.log("type user", response.data.data.user)
         commit(types.GET_USER, response.data.data.user)
         commit(types.GET_LANGUAGES, response.data.data.languages)
         commit(types.GET_STATUS, response.data.success)
@@ -164,36 +145,60 @@ export default new Vuex.Store({
         console.log(error);
       });
     },
+    [types.POST_CALENDAR_EVENT]: async ({ commit, dispatch }, payload) => {
+      await axios.post('/calendarEvent', {
+        name: payload.name || '',
+        color: payload.color || '',
+        start: payload.start || '',
+        end: payload.end || '',
+        details: payload.details || '',
+        timed: payload.timed || '',
+        dialog: payload.dialog || '',
+      })
+      .then(function (response) {
+        console.log('POST_CALENDAR_EVENTS', response)
+        dispatch(types.GET_CALENDAR_EVENTS)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
     [types.GET_CALENDAR_EVENTS]: async ({ commit }, payload) => {
-      // await axios.get('/calendarEvents')
-      // .then(function (response) {
-        commit(types.SET_CALENDAR_EVENTS, [
-              {
-                id: '1',
-                name: 'Lesson',
-                color: 'blue',
-                start:  new Date('2022-02-08T12:12:00').getTime(),
-                end: new Date('2022-02-08T12:19:00').getTime(),
-                details: 'Regular Lesson',
-                timed: false,
-                dialog: false,
-              },
-              {
-                id: '2',
-                name: 'Lesson',
-                color: 'blue',
-                start: new Date('2022-02-09T12:12:00').getTime(),
-                end: new Date('2022-02-09T12:19:00').getTime(),
-                details: 'Overdue Lesson',
-                timed: false,
-                dialog: false,
-              }
-            ]
-          ) //response.data.data.users
-      // })
-      // .catch(function (error) {
-      //   console.log(error);
-      // });
+      await axios.get('/calendarEvents')
+      .then(function (response) {
+        commit(types.SET_CALENDAR_EVENTS, response.data.data.calendarEvents) 
+        console.log('GET_CALENDAR_EVENTS', response.data.data.calendarEvents)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    [types.UPDATE_CALENDAR_EVENT]: async ({ commit, dispatch }, payload) => {
+      await axios.put(`/calendarEvent/${payload.id}`, {
+        name: payload.name || '',
+        color: payload.color || '',
+        start: payload.start || '',
+        end: payload.end || '',
+        details: payload.details || '',
+        timed: payload.timed || '',
+        dialog: payload.dialog,
+      })
+      .then(function (response) {
+        console.log('UPDATE_CALENDAR_EVENT', response)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    [types.DELETE_CALENDAR_EVENT]: async ({ dispatch }, payload) => {
+      await axios.delete(`/calendarEvent/${payload}`)
+      .then(function (response) {
+        console.log(response)
+        dispatch(types.GET_CALENDAR_EVENTS)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     },
   },
   modules: {

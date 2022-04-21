@@ -86,28 +86,11 @@
           locale="pl"
           :weekdays="weekdays"
           @change="getEventsFromPromise"
-          @mousedown:event="startDrag"
           @mousedown:time="startTime"
-          @mousemove:time="mouseMove"
-          @mouseup:time="endDrag"
-          @mouseleave.native="cancelDrag"
           @click:event="showEvent"
           @click:more="viewDay"
           @click:date="viewDay"
         >
-        <!-- :now="today" 
-        -->
-          <template v-slot:event="{ event, timed, eventSummary }">
-            <div
-              class="v-event-draggable"
-              v-html="eventSummary()"
-            ></div>
-            <div
-              v-if="timed"
-              class="v-event-drag-bottom"
-              @mousedown.stop="extendBottom(event)"
-            ></div>
-          </template>
         </v-calendar>
         <v-menu
           v-model="selectedOpen"
@@ -124,28 +107,71 @@
               :color="selectedEvent.color"
               dark
             >
-              <v-btn icon>
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
-              <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+              <v-toolbar-title v-if="createEvent !== selectedEvent.id" v-html="selectedEvent.name"></v-toolbar-title>
+                <v-text-field v-else
+                  v-model="selectedEvent.name">
+                </v-text-field>
               <v-spacer></v-spacer>
-              <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
-              </v-btn>
-              <v-btn icon>
-                <v-icon>mdi-dots-vertical</v-icon>
+              <v-btn @click="selectedOpen = false" icon>
+                <v-icon>mdi-close</v-icon>
               </v-btn>
             </v-toolbar>
             <v-card-text>
-              <span v-html="selectedEvent.details"></span>
+              <form v-if="createEvent !== selectedEvent.id">
+                {{ selectedEvent.details }}
+              </form>
+              <form v-else>
+                <textarea
+                  v-model="selectedEvent.details"
+                  type="text"
+                  style="width: 100%;"
+                  min-height="100"
+                  placeholder="add note"
+                ></textarea>
+              </form>
+            </v-card-text>
+            <v-card-text>
+              <form v-if="createEvent !== selectedEvent.id">
+                <b>Time Start:</b> {{ selectedEvent.start }}
+              </form>
+              <form v-else>
+                <b>Time Start:</b>
+                <v-text-field
+                  v-model="selectedEvent.start"
+                ></v-text-field>
+              </form>
+              <form v-if="createEvent !== selectedEvent.id">
+                <b>Time End:</b> {{ selectedEvent.end }}
+              </form>
+              <form v-else>
+                <b>Time End:</b>
+                <v-text-field
+                  v-model="selectedEvent.end"
+                ></v-text-field>
+              </form>
             </v-card-text>
             <v-card-actions>
               <v-btn
-                text
-                color="secondary"
-                @click="selectedOpen = false"
+                color="success"
+                v-if="createEvent !== selectedEvent.id"
+                @click.prevent="editEvent(selectedEvent)"
               >
-                Cancel
+                Edit
+              </v-btn>
+              <v-btn
+                color="info"
+                v-else
+                @click.prevent="updateEvent(selectedEvent)"
+              >
+                Save
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn
+                outlined
+                color="error"
+                @click="deleteEvent(selectedEvent.id)" 
+              >
+                Delete
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -161,8 +187,6 @@ import { mapActions, mapGetters } from 'vuex';
 
 export default {
     data: () => ({
-      // today: new Date().toISOString().substr(1, 10),
-      // focus: new Date().toISOString().substr(1, 10),
       value: '',
       events: [],
       type: 'week',
@@ -192,7 +216,7 @@ export default {
       selectedEvent: {},
       selectedElement: null,
       selectedOpen: false,
-      
+      newEvent: true,
     }),
     computed:{
       ...mapGetters({
@@ -200,6 +224,29 @@ export default {
       })
     },
     methods: {
+      ...mapActions({
+        getCalendarEventsFromPromise: types.GET_CALENDAR_EVENTS,
+        updateCalendarEvent: types.UPDATE_CALENDAR_EVENT,
+        deleteCalendarEvent: types.DELETE_CALENDAR_EVENT,
+        postCalendarEvent: types.POST_CALENDAR_EVENT
+      }), 
+      getEventsFromPromise () {
+        setTimeout(() => {
+          this.events = this.getCalendarEvents
+        }, 500)
+      },
+      updateEvent(event){
+        this.updateCalendarEvent(event);
+        this.selectedOpen = false;
+        this.createEvent = null
+      },
+      deleteEvent(id){
+        this.deleteCalendarEvent(id);
+        this.selectedOpen = false;
+        setTimeout(() => {
+          this.events = this.getCalendarEvents
+        }, 500)        
+      },
       setToday () {
         this.value = ''
       },
@@ -214,22 +261,22 @@ export default {
       next () {
         this.$refs.calendar.next()
       },
-      startDrag ({ event, timed }) {
-        if (event && timed) {
-          this.dragEvent = event
-          this.dragTime = null
-          this.extendOriginal = null
-        }
+        roundTime (time, down = true) {
+        const roundTo = 15 // minutes
+        const roundDownTime = roundTo * 60 * 1000
+        console.log('@@@@@@ time', time)
+
+        return down
+          ? time - time % roundDownTime
+          : time + (roundDownTime - (time % roundDownTime))
       },
-      startTime (tms) {
-        const mouse = this.toTime(tms)
-
-        if (this.dragEvent && this.dragTime === null) {
-          const start = this.dragEvent.start
-
-          this.dragTime = mouse - start
-        } else {
-          this.createStart = this.roundTime(mouse)
+      startTime (tms, element) {
+        let el = element.path[0];
+        if(el.className == 'v-calendar-daily__day-interval'){
+          let date = new Date(tms.year, tms.month - 1, tms.day, tms.hour, tms.minute)
+          let userTimezoneOffset = date.getTimezoneOffset() * 60000;
+          let newDate = new Date(date.getTime() - userTimezoneOffset);
+          this.createStart = this.roundTime(newDate)
           this.createEvent = {
             name: `Event #${this.events.length}`,
             color: this.rndElement(this.colors),
@@ -237,72 +284,13 @@ export default {
             end: this.createStart,
             timed: true,
           }
-
-          this.events.push(this.createEvent)
+          this.postCalendarEvent(this.createEvent)
+          setTimeout(() => {
+            this.events = this.getCalendarEvents
+          }, 500)
         }
       },
-      extendBottom (event) {
-        this.createEvent = event
-        this.createStart = event.start
-        this.extendOriginal = event.end
-      },
-      mouseMove (tms) {
-        const mouse = this.toTime(tms)
 
-        if (this.dragEvent && this.dragTime !== null) {
-          const start = this.dragEvent.start
-          const end = this.dragEvent.end
-          const duration = end - start
-          const newStartTime = mouse - this.dragTime
-          const newStart = this.roundTime(newStartTime)
-          const newEnd = newStart + duration
-
-          this.dragEvent.start = newStart
-          this.dragEvent.end = newEnd
-        } else if (this.createEvent && this.createStart !== null) {
-          const mouseRounded = this.roundTime(mouse, false)
-          const min = Math.min(mouseRounded, this.createStart)
-          const max = Math.max(mouseRounded, this.createStart)
-
-          this.createEvent.start = min
-          this.createEvent.end = max
-        }
-      },
-      endDrag () {
-        this.dragTime = null
-        this.dragEvent = null
-        this.createEvent = null
-        this.createStart = null
-        this.extendOriginal = null
-      },
-      cancelDrag () {
-        if (this.createEvent) {
-          if (this.extendOriginal) {
-            this.createEvent.end = this.extendOriginal
-          } else {
-            const i = this.events.indexOf(this.createEvent)
-            if (i !== -1) {
-              this.events.splice(i, 1)
-            }
-          }
-        }
-
-        this.createEvent = null
-        this.createStart = null
-        this.dragTime = null
-        this.dragEvent = null
-      },
-      roundTime (time, down = true) {
-        const roundTo = 15 // minutes
-        const roundDownTime = roundTo * 60 * 1000
-
-        return down
-          ? time - time % roundDownTime
-          : time + (roundDownTime - (time % roundDownTime))
-      },
-      toTime (tms) {
-        return new Date(tms.year, tms.month - 1, tms.day, tms.hour, tms.minute).getTime()
-      },
       getEventColor (event) {
         const rgb = parseInt(event.color.substring(1), 16)
         const r = (rgb >> 16) & 0xFF
@@ -315,63 +303,34 @@ export default {
             ? `rgba(${r}, ${g}, ${b}, 0.7)`
             : event.color
       },
-      getEvents ({ start, end }) {
-        const events = []
-
-        const min = new Date(`${start.date}T00:00:00`).getTime()
-        const max = new Date(`${end.date}T23:59:59`).getTime()
-        const days = (max - min) / 86400000
-        const eventCount = this.rnd(days, days + 20)
-
-        for (let i = 0; i < eventCount; i++) {
-          const timed = this.rnd(0, 3) !== 0
-          const firstTimestamp = this.rnd(min, max)
-          const secondTimestamp = this.rnd(2, timed ? 8 : 288) * 900000
-          const start = firstTimestamp - (firstTimestamp % 900000)
-          const end = start + secondTimestamp
-
-          events.push({
-            name: this.rndElement(this.names),
-            color: this.rndElement(this.colors),
-            start,
-            end,
-            timed,
-          })
-        }
-
-        this.events = events
-      },
+      
       rnd (a, b) {
         return Math.floor((b - a + 1) * Math.random()) + a
       },
       rndElement (arr) {
         return arr[this.rnd(0, arr.length - 1)]
       },
+      editEvent(event) {
+        this.createEvent = event.id
+      },
       showEvent ({ nativeEvent, event }) {
+        nativeEvent.stopPropagation()
         const open = () => {
           this.selectedEvent = event
           this.selectedElement = nativeEvent.target
           requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
         }
-
         if (this.selectedOpen) {
           this.selectedOpen = false
           requestAnimationFrame(() => requestAnimationFrame(() => open()))
         } else {
           open()
-        }
-
-        nativeEvent.stopPropagation()
-      },
-      getEventsFromPromise () {
-        console.log('getCalendarEvents',this.getCalendarEvents)
-        this.events = this.getCalendarEvents
-        //console.log(this.events)
+        }   
       },
     },
-    // mounted(){
-    //   this.getEventsFromPromise();
-    // }
+    created(){
+      this.getCalendarEventsFromPromise();
+    }
 }
 </script>
 
