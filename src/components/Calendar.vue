@@ -38,6 +38,15 @@
           <v-toolbar-title v-if="$refs.calendar">
             {{ $refs.calendar.title }}
           </v-toolbar-title>
+          <v-btn
+            outlined
+            class="ml-4"
+            color="grey darken-2"
+            @click="eventModalOpen = true"
+          >
+            + Add Event
+          </v-btn>
+          <add-event-modal :event-modal-open="eventModalOpen" @changeEventModalOpen="changeEventModalOpen"></add-event-modal>
           <v-spacer></v-spacer>
           <v-menu
             bottom
@@ -78,15 +87,11 @@
           ref="calendar"
           v-model="value"
           color="primary"
-          
           :type="type"
-          :events="events"
-          :event-color="getEventColor"
+          :events="this.getCalendarEvents"
           :event-ripple="false"
           locale="pl"
           :weekdays="weekdays"
-          @change="getEventsFromPromise"
-          @mousedown:time="startTime"
           @click:event="showEvent"
           @click:more="viewDay"
           @click:date="viewDay"
@@ -185,6 +190,8 @@
 import * as types from '@/store/types'; 
 import { mapActions, mapGetters } from 'vuex';
 
+import AddEventModal from './AddEventModal.vue';
+
 export default {
     data: () => ({
       value: '',
@@ -196,13 +203,9 @@ export default {
         day: 'Day',
         '4day': '4 Days',
       },
-      colors: ['#2196F3', '#3F51B5', '#673AB7', '#00BCD4', '#4CAF50', '#FF9800', '#757575'],
-      names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
       weekdays: [1, 2, 3, 4, 5, 6, 0],
-      dragEvent: null,
-      dragStart: null,
       createEvent: {
-          id: null, // currentEditId
+          id: null, 
           name: null,
           color: null,
           start: null,
@@ -211,13 +214,15 @@ export default {
           timed: false,
           dialog: false
       },
-      createStart: null,
-      extendOriginal: null,
       selectedEvent: {},
       selectedElement: null,
       selectedOpen: false,
       newEvent: true,
+      eventModalOpen: false
     }),
+    components: {
+      AddEventModal
+    },
     computed:{
       ...mapGetters({
         getCalendarEvents: types.CALENDAR_EVENTS,
@@ -230,22 +235,19 @@ export default {
         deleteCalendarEvent: types.DELETE_CALENDAR_EVENT,
         postCalendarEvent: types.POST_CALENDAR_EVENT
       }), 
-      getEventsFromPromise () {
-        setTimeout(() => {
-          this.events = this.getCalendarEvents
-        }, 500)
-      },
+      
       updateEvent(event){
         this.updateCalendarEvent(event);
         this.selectedOpen = false;
         this.createEvent = null
       },
+
       deleteEvent(id){
         this.deleteCalendarEvent(id);
-        this.selectedOpen = false;
-        setTimeout(() => {
-          this.events = this.getCalendarEvents
-        }, 500)        
+        this.selectedOpen = false;     
+      },
+      changeEventModalOpen(val){
+        this.eventModalOpen = val
       },
       setToday () {
         this.value = ''
@@ -260,56 +262,7 @@ export default {
       },
       next () {
         this.$refs.calendar.next()
-      },
-        roundTime (time, down = true) {
-        const roundTo = 15 // minutes
-        const roundDownTime = roundTo * 60 * 1000
-        console.log('@@@@@@ time', time)
-
-        return down
-          ? time - time % roundDownTime
-          : time + (roundDownTime - (time % roundDownTime))
-      },
-      startTime (tms, element) {
-        let el = element.path[0];
-        if(el.className == 'v-calendar-daily__day-interval'){
-          let date = new Date(tms.year, tms.month - 1, tms.day, tms.hour, tms.minute)
-          let userTimezoneOffset = date.getTimezoneOffset() * 60000;
-          let newDate = new Date(date.getTime() - userTimezoneOffset);
-          this.createStart = this.roundTime(newDate)
-          this.createEvent = {
-            name: `Event #${this.events.length}`,
-            color: this.rndElement(this.colors),
-            start: this.createStart,
-            end: this.createStart,
-            timed: true,
-          }
-          this.postCalendarEvent(this.createEvent)
-          setTimeout(() => {
-            this.events = this.getCalendarEvents
-          }, 500)
-        }
-      },
-
-      getEventColor (event) {
-        const rgb = parseInt(event.color.substring(1), 16)
-        const r = (rgb >> 16) & 0xFF
-        const g = (rgb >> 8) & 0xFF
-        const b = (rgb >> 0) & 0xFF
-
-        return event === this.dragEvent
-          ? `rgba(${r}, ${g}, ${b}, 0.7)`
-          : event === this.createEvent
-            ? `rgba(${r}, ${g}, ${b}, 0.7)`
-            : event.color
-      },
-      
-      rnd (a, b) {
-        return Math.floor((b - a + 1) * Math.random()) + a
-      },
-      rndElement (arr) {
-        return arr[this.rnd(0, arr.length - 1)]
-      },
+      },   
       editEvent(event) {
         this.createEvent = event.id
       },

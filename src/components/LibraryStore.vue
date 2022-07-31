@@ -168,6 +168,7 @@ import ModalWindow from './ModalWindow.vue';
     methods: {
       ...mapActions ({
         getUserProfile: types.GET_USER_PROFILE,
+        getUsersResult: types.GET_USERS,
       }),
     
       changeFormOpen(val){
@@ -175,7 +176,7 @@ import ModalWindow from './ModalWindow.vue';
       },
     },
     mounted(){
-      this.usersResult();
+      this.getUsersResult();
     }
   }
 </script>

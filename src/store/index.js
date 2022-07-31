@@ -48,7 +48,7 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    [types.GET_USER]: async ({ state, commit }, payload) => {
+    [types.GET_USER]: async ({ dispatch, commit }, payload) => {
       await axios.post('/login', {
         email: payload.email,
         password: payload.password
@@ -65,6 +65,7 @@ export default new Vuex.Store({
         }
         if((response.data.success == true) && ((response.data.data.user.type === 'teacher') || (response.data.data.user.type  === 'pupil'))) {
           router.push('dashboard')
+          dispatch(types.GET_CALENDAR_EVENTS)
         } else if ((response.data.success == true) && (response.data.data.user.type  === 'admin')){
           router.push('users')
         }
@@ -156,7 +157,6 @@ export default new Vuex.Store({
         dialog: payload.dialog || '',
       })
       .then(function (response) {
-        console.log('POST_CALENDAR_EVENTS', response)
         dispatch(types.GET_CALENDAR_EVENTS)
       })
       .catch(function (error) {
@@ -167,7 +167,6 @@ export default new Vuex.Store({
       await axios.get('/calendarEvents')
       .then(function (response) {
         commit(types.SET_CALENDAR_EVENTS, response.data.data.calendarEvents) 
-        console.log('GET_CALENDAR_EVENTS', response.data.data.calendarEvents)
       })
       .catch(function (error) {
         console.log(error);
