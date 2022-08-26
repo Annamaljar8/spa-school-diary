@@ -35,10 +35,14 @@ class CalendarController extends BaseController
     {
         $user = Auth::user();
         $start = new \DateTime();
+        $start->setTimezone(new \DateTimeZone(env('APP_TZ')));
         $start->setTimestamp($request->start / 1000);
+        
         $end = new \DateTime();
+        $end->setTimezone(new \DateTimeZone(env('APP_TZ')));
         $end->setTimestamp($request->end / 1000);
-        $end->modify( '+30 minute' );
+        //$end->modify( '+30 minute' );
+        
         $event = new Calendar();
         $event->user_id = $user->id;
         $event->name = $request->name;
