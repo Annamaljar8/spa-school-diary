@@ -34,15 +34,20 @@ class CalendarController extends BaseController
     public function create(Request $request)
     {
         $user = Auth::user();
+        $start = new \DateTime();
+        $start->setTimestamp($request->start / 1000);
+        $end = new \DateTime();
+        $end->setTimestamp($request->end / 1000);
+        $end->modify( '+30 minute' );
         $event = new Calendar();
         $event->user_id = $user->id;
         $event->name = $request->name;
         $event->color = $request->color;
-        $event->start = $request->start;
-        $event->end = $request->end;
-        $event->details = $request->details;
+        $event->start = $start->format('Y-m-d H:i:s');
+        $event->end = $end->format('Y-m-d H:i:s');
+        $event->details = $request->details?$request->details:'';
         $event->timed = $request->timed;
-        $event->dialog = $request->dialog;
+        $event->dialog = $request->dialog?$request->dialog:0;
         $event->save();
         return $this->sendResponse(['success' => true], 'Calendar event create successfully.');
     }
