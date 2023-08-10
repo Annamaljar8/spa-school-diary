@@ -89,6 +89,7 @@ export default new Vuex.Store({
       await axios.get('/users')
       .then(function (response) {
         commit(types.GET_USERS, response.data.data.users)
+        console.log(response.data.data.users)
       })
       .catch(function (error) {
         console.log(error);

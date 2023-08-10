@@ -46,12 +46,6 @@
     <modal-window :modal-open="modalOpen" @changeModalOpen="changeModalOpen" :is-delete-user-profile="isDeleteUserProfile" @cangeDeleteUserProfile="cangeDeleteUserProfile"></modal-window>
     <user-profile :dialog-open="dialogOpen" @changeDialogOpen="changeDialogOpen"></user-profile>
     <div class="text-center pt-2">
-      <!-- <v-pagination 
-        color="#11B0C8"
-        v-model="currentPage"
-        :length="pagesLength"
-        :total-visible="7"
-      ></v-pagination> -->
     </div>
   </div>
 </template>

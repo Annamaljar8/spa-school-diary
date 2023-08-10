@@ -1,8 +1,5 @@
 <template>
   <div>
-    <!-- <v-btn style="margin: 1rem!important" @click="formOpen = true;" >
-      Register User
-    </v-btn> -->
     <v-card>
       <v-card-title class="indigo white--text text-h5">
         User Directory
@@ -11,7 +8,7 @@
         class="pa-4"
         justify="space-between"
       >
-        <v-col cols="5">
+        <v-col cols="3">
           <v-treeview
             :active.sync="active"
             :items="items"
@@ -33,6 +30,7 @@
 
         <v-col
           class="d-flex text-center"
+          cols="6"
         >
           <v-scroll-y-transition mode="out-in">
             <div
@@ -47,27 +45,12 @@
               :key="selected.id"
               class="pt-6 mx-auto"
               flat
-              max-width="400"
+              min-width="400"
             >
               <v-card-text>
-                <!-- <v-avatar
-                  v-if="avatar"
-                  size="88"
-                >
-                  <v-img
-                    :src="`https://avataaars.io/${avatar}`"
-                    class="mb-6"
-                  ></v-img>
-                </v-avatar> -->
                 <h3 class="text-h5 mb-2">
                   {{ selected.name }}
                 </h3>
-                <!-- <div class="blue--text mb-2">
-                  {{ selected.motherName }}
-                </div>
-                <div class="blue--text subheading font-weight-bold">
-                  {{ selected.fatherName }}
-                </div> -->
               </v-card-text>
               <v-divider></v-divider>
               <v-row
@@ -77,35 +60,20 @@
                 <v-col
                   class="text-right mr-4 mb-2"
                   tag="strong"
-                  cols="5"
+                  cols="3"
                 >
-                  Company:
-                </v-col>
-                <!-- <v-col>{{ selected.company.name }}</v-col> -->
-                <v-col
-                  class="text-right mr-4 mb-2"
-                  tag="strong"
-                  cols="5"
-                >
-                  Website:
-                </v-col>
-                <v-col>
-                  <!-- <a
-                    :href="`//${selected.website}`"
-                    target="_blank"
-                  >{{ selected.website }}</a> -->
+                  E-mail:
                 </v-col>
                 <v-col
-                  class="text-right mr-4 mb-2"
-                  tag="strong"
-                  cols="5"
-                >
-                  Phone:
+                  cols="8">
+                  {{ selectedEmail(selected) }}
                 </v-col>
-                <!-- <v-col>{{ selected.phone }}</v-col> -->
               </v-row>
             </v-card>
           </v-scroll-y-transition>
+        </v-col>
+         <v-col cols="3">
+        <homework-list></homework-list>
         </v-col>
       </v-row>
     </v-card>
@@ -121,9 +89,7 @@ import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiAccountMusicOutline } from '@mdi/js';
 import { mdiDeleteOutline } from '@mdi/js';
 
-import RegisterForm from './RegisterForm.vue';
-import UserProfile from './UserProfile.vue';
-import ModalWindow from './ModalWindow.vue';
+import HomeworkList from './HomeworkList.vue';
 
   export default {
     name: 'LibraryStore',
@@ -139,9 +105,7 @@ import ModalWindow from './ModalWindow.vue';
     }),
 
     components: {
-      RegisterForm,
-      UserProfile,
-      ModalWindow,
+      HomeworkList,
       SvgIcon
     },
     computed:{
@@ -160,19 +124,22 @@ import ModalWindow from './ModalWindow.vue';
       selected () {
         if (!this.active.length) return undefined
         const id = this.active[0]
-        console.log(id)
-        return id
-        // return this.usersResult.find(user => user.id === id)
+        return this.usersResult.find(user => user.id === id)
       },
     },
     methods: {
       ...mapActions ({
-        getUserProfile: types.GET_USER_PROFILE,
         getUsersResult: types.GET_USERS,
       }),
-    
-      changeFormOpen(val){
-        this.formOpen = val;
+      selectedEmail(selected){
+        let selectedEmail = ''
+        if (selected.fatherEmail !=='-' || ''){
+          selectedEmail = selected.fatherEmail
+        } else
+        if (selected.motherEmail !=='-' || ''){
+          selectedEmail = selected.motherEmail
+        }
+        return selectedEmail
       },
     },
     mounted(){

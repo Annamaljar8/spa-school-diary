@@ -3,7 +3,7 @@
     <v-dialog
       v-model="dialogOpen"
       persistent
-      max-width="600px"
+      max-width="700px"
     >
       <v-card>
         <v-card-title>

@@ -46,6 +46,7 @@
                   <v-date-picker
                     v-model="dateStart"
                     @input="menu = false"
+                    :first-day-of-week="1"
                   ></v-date-picker>
                 </v-menu>
               </v-col>
@@ -112,6 +113,7 @@
                   <v-date-picker
                     v-model="dateEnd"
                     @input="menu = false"
+                    :first-day-of-week="1"
                   ></v-date-picker>
                 </v-menu>
               </v-col>
