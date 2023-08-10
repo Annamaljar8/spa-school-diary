@@ -73,7 +73,9 @@
           </v-scroll-y-transition>
         </v-col>
          <v-col cols="3">
-        <homework-list></homework-list>
+        <homework-list 
+          :selected-id="selectedId">
+        </homework-list>
         </v-col>
       </v-row>
     </v-card>
@@ -102,6 +104,7 @@ import HomeworkList from './HomeworkList.vue';
       avatar: null,
       open: [],
       users: [],
+      selectedId: null
     }),
 
     components: {
@@ -111,7 +114,6 @@ import HomeworkList from './HomeworkList.vue';
     computed:{
       ...mapGetters ({
         usersResult: types.USERS_RESULT,
-        userProfile: types.USER_PROFILE,
       }),
       items () {
         return [
@@ -124,6 +126,7 @@ import HomeworkList from './HomeworkList.vue';
       selected () {
         if (!this.active.length) return undefined
         const id = this.active[0]
+        this.selectedId = id
         return this.usersResult.find(user => user.id === id)
       },
     },
@@ -135,8 +138,7 @@ import HomeworkList from './HomeworkList.vue';
         let selectedEmail = ''
         if (selected.fatherEmail !=='-' || ''){
           selectedEmail = selected.fatherEmail
-        } else
-        if (selected.motherEmail !=='-' || ''){
+        } else if (selected.motherEmail !=='-' || ''){
           selectedEmail = selected.motherEmail
         }
         return selectedEmail

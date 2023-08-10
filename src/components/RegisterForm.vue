@@ -51,17 +51,10 @@ import { mapActions, mapMutations, mapGetters } from 'vuex';
       name: '',
       email: '',
       password: '',
-      c_password: '',
-      
-      // formOpen: false
+      c_password: ''
     }),
     props: {
       formOpen: Boolean
-    },
-    computed: {
-      // ...mapGetters ({
-      //   userData: types.USER_DATA,
-      // }),
     },
     methods: {
       ...mapActions ({
