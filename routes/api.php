@@ -31,4 +31,7 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('/calendarEvent',[CalendarController::class,'create']);
     Route::put('/calendarEvent/{event}',[CalendarController::class,'update']);
     Route::delete('/calendarEvent/{event}',[CalendarController::class,'delete']);
+    
+    Route::get('/homework/list/{user}', [HomeworkListController::class, 'homeworklist']);
+    Route::post('/homework/create/{user}', [HomeworkListController::class, 'create']);
 });
