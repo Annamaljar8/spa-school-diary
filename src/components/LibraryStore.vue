@@ -72,7 +72,7 @@
             </v-card>
           </v-scroll-y-transition>
         </v-col>
-         <v-col cols="3">
+        <v-col cols="3">
         <homework-list 
           :selected-id="selectedId">
         </homework-list>

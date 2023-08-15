@@ -200,6 +200,18 @@ export default new Vuex.Store({
         console.log(error);
       });
     },
+    [types.POST_HOMEWORK]: async ({ commit, dispatch }, payload) => {
+      await axios.post(`/homework/create/${payload.id}`, {
+        deadline: payload.deadline,
+        description: payload.description
+      })
+      .then(function (response) {
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
   },
   modules: {
   }
