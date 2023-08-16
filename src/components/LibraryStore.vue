@@ -127,12 +127,14 @@ import HomeworkList from './HomeworkList.vue';
         if (!this.active.length) return undefined
         const id = this.active[0]
         this.selectedId = id
+        this.getUserHomeworkList(this.selectedId)
         return this.usersResult.find(user => user.id === id)
       },
     },
     methods: {
       ...mapActions ({
         getUsersResult: types.GET_USERS,
+        getUserHomeworkList: types.GET_USER_HOMEWORK_LIST
       }),
       selectedEmail(selected){
         let selectedEmail = ''

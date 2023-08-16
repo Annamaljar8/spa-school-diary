@@ -35,12 +35,27 @@
           close
         </v-btn>
       </form>
+      <div class="mt-8">
+        <v-expansion-panels class="mb-6">
+          <v-expansion-panel
+            v-for="(userHomework, i) in userHomeworkList"
+            :key="i"
+          >
+            <v-expansion-panel-header expand-icon="mdi-menu-down">
+              {{ userHomework.deadline }}
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              {{ userHomework.description }}
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </div>
   </div>
 </template>
 
 <script>
 import * as types from '@/store/types'; 
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     data: ()=> ({
@@ -51,9 +66,15 @@ export default {
     props: {
       selectedId: Number
     },
+    computed: {
+      ...mapGetters({
+        userHomeworkList: types.USER_HOMEWORK_LIST
+      })
+    },
     methods: {
     ...mapActions({
-      postHomework: types.POST_HOMEWORK
+      postHomework: types.POST_HOMEWORK,
+      getUserHomeworkList: types.GET_USER_HOMEWORK_LIST
     }),
     addHomework(){
       this.formOpen = true
@@ -66,7 +87,8 @@ export default {
         description: this.homeworkDescripion
         })
       this.homeworkDate = '',
-      this.homeworkDescripion = ''
+      this.homeworkDescripion = '',
+      this.getUserHomeworkList(this.selectedId)
     },
     closeHomework(){
       this.formOpen = false

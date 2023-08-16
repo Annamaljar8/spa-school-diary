@@ -15,6 +15,7 @@ export default new Vuex.Store({
     userProfile: [],
     calendarEvents: [],
     calendarEvent: null,
+    userHomeworkList: []
   },
   getters: {
     [types.STATUS]: (state) => state.success,
@@ -23,6 +24,7 @@ export default new Vuex.Store({
     [types.USERS_RESULT]: (state) => state.usersResult, 
     [types.USER_PROFILE]: (state) => state.userProfile, 
     [types.CALENDAR_EVENTS]: (state) => state.calendarEvents, 
+    [types.USER_HOMEWORK_LIST]: (state) => state.userHomeworkList, 
   },
   mutations: {
     [types.GET_USER]: (state, payload) => {
@@ -45,6 +47,9 @@ export default new Vuex.Store({
     },
     [types.SET_UPDATE_CALENDAR_EVENT]: (state, payload) => {
       state.calendarEvent =  payload;
+    },
+    [types.GET_USER_HOMEWORK_LIST]: (state, payload) => {
+      state.userHomeworkList =  payload;
     },
   },
   actions: {
@@ -207,6 +212,15 @@ export default new Vuex.Store({
       })
       .then(function (response) {
         console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    [types.GET_USER_HOMEWORK_LIST]: async ({ commit }, payload) => {
+      await axios.get(`/homework/list/${payload}`)
+      .then(function (response) {
+        commit(types.GET_USER_HOMEWORK_LIST, response.data.data.homework)
       })
       .catch(function (error) {
         console.log(error);
