@@ -198,7 +198,6 @@ export default new Vuex.Store({
     [types.DELETE_CALENDAR_EVENT]: async ({ dispatch }, payload) => {
       await axios.delete(`/calendarEvent/${payload}`)
       .then(function (response) {
-        console.log(response)
         dispatch(types.GET_CALENDAR_EVENTS)
       })
       .catch(function (error) {
@@ -211,7 +210,7 @@ export default new Vuex.Store({
         description: payload.description
       })
       .then(function (response) {
-        console.log(response)
+        dispatch(types.GET_USER_HOMEWORK_LIST, payload.id)
       })
       .catch(function (error) {
         console.log(error);
@@ -221,6 +220,15 @@ export default new Vuex.Store({
       await axios.get(`/homework/list/${payload}`)
       .then(function (response) {
         commit(types.GET_USER_HOMEWORK_LIST, response.data.data.homework)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    [types.DELETE_HOMEWORK]: async ({ commit, dispatch }, payload) => {
+      await axios.delete(`/homework/${payload.id}`)
+      .then(function (response) {
+        dispatch(types.GET_USER_HOMEWORK_LIST, payload.userId)
       })
       .catch(function (error) {
         console.log(error);

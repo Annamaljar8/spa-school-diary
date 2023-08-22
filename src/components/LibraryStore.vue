@@ -5,7 +5,7 @@
         User Directory
       </v-card-title>
       <v-row
-        class="pa-4"
+        class="pa-4 align-flex-start"
         justify="space-between"
       >
         <v-col cols="3">
