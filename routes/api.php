@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\CalendarController;
+use App\Http\Controllers\API\HomeworkListController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -34,4 +35,6 @@ Route::middleware('auth:sanctum')->group( function () {
     
     Route::get('/homework/list/{user}', [HomeworkListController::class, 'homeworklist']);
     Route::post('/homework/create/{user}', [HomeworkListController::class, 'create']);
+    Route::delete('/homework/{homework}', [HomeworkListController::class, 'delete']);
+    Route::put('/homework/{homework}',[HomeworkListController::class,'update']);
 });
