@@ -11,7 +11,7 @@ use App\Models\Homework;
 class HomeworkListController extends BaseController
 {
     public function homeworklist(User $user, Request $request) {
-        $listWorks = Homework::where('user_id',$user->id)->get();
+        $listWorks = Homework::where('user_id',$user->id)->where('active',1)->get();
         $success['homework'] = [];
         foreach ($listWorks as $listWork) {
             $success['homework'][] = (object) array(
@@ -32,6 +32,25 @@ class HomeworkListController extends BaseController
         $homework->teacher_id = $teacher->id;
         $homework->description = $request->description?$request->description:'';
         $homework->save();
-        return $this->sendResponse(['success' => true], 'Homework create successfully.');
+        return $this->sendResponse(['success' => true, 'id' => $homework->id], 'Homework create successfully.');
+    }
+    
+    public function update(Homework $homework, Request $request)
+    {
+        $user = Auth::user();
+        if($homework->teacher_id == $user->id){
+            $homework->active = 0;
+            $homework->save();
+        }
+        return $this->sendResponse(['success' => true], 'Homework go to archive successfully.');
+    }
+    
+    public function delete(Homework $homework, Request $request) 
+    {
+        $user = Auth::user();
+        if($homework->teacher_id == $user->id){
+            $homework->delete();
+        }
+        return $this->sendResponse(['success' => true], 'Homework event delete successfully.');
     }
 }
