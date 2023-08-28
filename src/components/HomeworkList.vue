@@ -10,7 +10,7 @@
       </v-btn>
       <form v-if="formOpen">
         <v-menu
-          v-model="menu"
+          v-model="menu5"
           :close-on-content-click="false"
           :nudge-right="40"
           transition="scale-transition"
@@ -30,7 +30,7 @@
           </template>
           <v-date-picker
             v-model="homeworkDeadline"
-            @input="menu = false"
+            @input="menu5 = false"
             :first-day-of-week="1"
           ></v-date-picker>
         </v-menu>
@@ -103,7 +103,8 @@ export default {
     data: ()=> ({
       formOpen: false,
       homeworkDeadline: '',
-      homeworkDescripion: ''
+      homeworkDescripion: '',
+      menu5: false
     }),
     props: {
       selectedId: Number
@@ -129,8 +130,7 @@ export default {
         deadline: this.homeworkDeadline, 
         description: this.homeworkDescripion
         })
-      this.homeworkDeadline = '',
-      this.homeworkDescripion = ''
+      this.closeHomework()
     },
     deleteHomeworkItem(id){
       let userId = this.selectedId
@@ -138,6 +138,8 @@ export default {
     },
     closeHomework(){
       this.formOpen = false
+      this.homeworkDeadline = ''
+      this.homeworkDescripion = ''
     }
   }
 }

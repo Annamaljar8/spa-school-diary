@@ -94,7 +94,6 @@ export default new Vuex.Store({
       await axios.get('/users')
       .then(function (response) {
         commit(types.GET_USERS, response.data.data.users)
-        console.log(response.data.data.users)
       })
       .catch(function (error) {
         console.log(error);
@@ -153,7 +152,9 @@ export default new Vuex.Store({
       });
     },
     [types.POST_CALENDAR_EVENT]: async ({ commit, dispatch }, payload) => {
+      console.log('payload', payload)
       await axios.post('/calendarEvent', {
+        pupil_id: payload.pupil_id || '',
         name: payload.name || '',
         color: payload.color || '',
         start: payload.start || '',
@@ -180,6 +181,7 @@ export default new Vuex.Store({
     },
     [types.UPDATE_CALENDAR_EVENT]: async ({ commit, dispatch }, payload) => {
       await axios.put(`/calendarEvent/${payload.id}`, {
+        pupil_id: payload.pupil_id || '',
         name: payload.name || '',
         color: payload.color || '',
         start: payload.start || '',

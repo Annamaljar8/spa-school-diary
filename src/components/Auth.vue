@@ -36,7 +36,7 @@ import { mapActions, mapGetters } from 'vuex';
       
     }),
     computed: {
-       ...mapGetters ({
+        ...mapGetters ({
         status: types.STATUS,
         getUserType: types.USER_TYPE,
       }),

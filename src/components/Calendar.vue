@@ -46,7 +46,10 @@
           >
             + Add Event
           </v-btn>
-          <add-event-modal :event-modal-open="eventModalOpen" @changeEventModalOpen="changeEventModalOpen"></add-event-modal>
+          <add-event-modal :event-modal-open="eventModalOpen" 
+                            @changeEventModalOpen="changeEventModalOpen"
+                            :users-result="usersResult">
+          </add-event-modal>
           <v-spacer></v-spacer>
           <v-menu
             bottom
@@ -226,6 +229,7 @@ export default {
     computed:{
       ...mapGetters({
         getCalendarEvents: types.CALENDAR_EVENTS,
+        usersResult: types.USERS_RESULT
       })
     },
     methods: {
@@ -233,7 +237,8 @@ export default {
         getCalendarEventsFromPromise: types.GET_CALENDAR_EVENTS,
         updateCalendarEvent: types.UPDATE_CALENDAR_EVENT,
         deleteCalendarEvent: types.DELETE_CALENDAR_EVENT,
-        postCalendarEvent: types.POST_CALENDAR_EVENT
+        postCalendarEvent: types.POST_CALENDAR_EVENT,
+        getUsersResult: types.GET_USERS
       }), 
       
       updateEvent(event){
@@ -283,6 +288,7 @@ export default {
     },
     created(){
       this.getCalendarEventsFromPromise();
+      this.getUsersResult()
     }
 }
 </script>
