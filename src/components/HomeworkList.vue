@@ -42,6 +42,13 @@
           rows="4"
           row-height="30"
         ></v-textarea>
+        <v-file-input
+          v-model="homeworkFiles"
+          chips
+          multiple
+          label="File input"
+          v-bind="fileInputAttrs"
+        ></v-file-input>
         <v-btn
           class="mr-4"
           @click="saveHomeworkItem()"
@@ -104,7 +111,12 @@ export default {
       formOpen: false,
       homeworkDeadline: '',
       homeworkDescripion: '',
-      menu5: false
+      menu5: false,
+      homeworkFiles: [],
+      fileInputAttrs: {
+        type: 'file', // Add the type attribute here
+        accept: 'application/pdf', // You can specify the accepted file types
+      },
     }),
     props: {
       selectedId: Number
@@ -128,7 +140,8 @@ export default {
       this.postHomework({
         id: this.selectedId, 
         deadline: this.homeworkDeadline, 
-        description: this.homeworkDescripion
+        description: this.homeworkDescripion,
+        files: this.homeworkFiles
         })
       this.closeHomework()
     },

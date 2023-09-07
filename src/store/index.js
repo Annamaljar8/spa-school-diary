@@ -10,12 +10,14 @@ export default new Vuex.Store({
   state: {
     userData: [],
     languagesData: [],
+    token: null,
     success: false,
     usersResult: [],
     userProfile: [],
     calendarEvents: [],
     calendarEvent: null,
-    userHomeworkList: []
+    userHomeworkList: [],
+    homeworkFiles: []
   },
   getters: {
     [types.STATUS]: (state) => state.success,
@@ -36,6 +38,9 @@ export default new Vuex.Store({
     [types.GET_STATUS]: (state, payload) => {
       state.success = payload;
     },
+    [types.SET_TOKEN]: (state, payload) => {
+      state.token =  payload;
+    },
     [types.GET_USERS]: (state, payload) => {
       state.usersResult = payload;
     },
@@ -51,6 +56,9 @@ export default new Vuex.Store({
     [types.GET_USER_HOMEWORK_LIST]: (state, payload) => {
       state.userHomeworkList =  payload;
     },
+    [types.SET_HOMEWORK_FILES]: (state, payload) => {
+      state.homeworkFiles =  payload;
+    },
   },
   actions: {
     [types.GET_USER]: async ({ dispatch, commit }, payload) => {
@@ -62,7 +70,9 @@ export default new Vuex.Store({
         commit(types.GET_USER, response.data.data.user)
         commit(types.GET_LANGUAGES, response.data.data.languages)
         commit(types.GET_STATUS, response.data.success)
+
         let token = response.data.data.token;
+        commit(types.SET_TOKEN, token)
         axios.defaults.headers.common = {
             'Accept': 'application/json',
             "Content-type": "application/json",
@@ -144,7 +154,6 @@ export default new Vuex.Store({
     [types.DELETE_USER_PROFILE]: async ({ dispatch }, payload) => {
       await axios.delete(`user/${payload}`)
       .then(function (response) {
-        console.log(response)
         dispatch(types.GET_USERS)
       })
       .catch(function (error) {
@@ -152,7 +161,6 @@ export default new Vuex.Store({
       });
     },
     [types.POST_CALENDAR_EVENT]: async ({ commit, dispatch }, payload) => {
-      console.log('payload', payload)
       await axios.post('/calendarEvent', {
         pupil_id: payload.pupil_id || '',
         name: payload.name || '',
@@ -191,7 +199,6 @@ export default new Vuex.Store({
         dialog: payload.dialog,
       })
       .then(function (response) {
-        console.log('UPDATE_CALENDAR_EVENT', response)
       })
       .catch(function (error) {
         console.log(error);
@@ -207,12 +214,45 @@ export default new Vuex.Store({
       });
     },
     [types.POST_HOMEWORK]: async ({ commit, dispatch }, payload) => {
-      await axios.post(`/homework/create/${payload.id}`, {
+      commit(types.SET_HOMEWORK_FILES, payload.files)
+      await axios.post(`/homework/create/${payload.id}`, 
+      {
         deadline: payload.deadline,
-        description: payload.description
+        description: payload.description,
       })
       .then(function (response) {
-        dispatch(types.GET_USER_HOMEWORK_LIST, payload.id)
+        dispatch(types.GET_USER_HOMEWORK_LIST, payload.id)        
+        dispatch(types.POST_HOMEWORK_FILES, response.data.data.id)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    [types.POST_HOMEWORK_FILES]: async ({ state }, payload) => {
+      const formData = new FormData();
+      const homeworkFiles = state.homeworkFiles
+      // Append each file to the FormData
+      for (const file of homeworkFiles) {
+        formData.append('files[]', file);
+      }
+      // Store the original axios.defaults.headers.common
+      const originalHeaders = { ...axios.defaults.headers.common };
+    
+      let token = state.token
+      // Overwrite axios.defaults.headers.common with your custom headers for this request
+      axios.defaults.headers.common = {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      };
+
+      await axios.post(`homework/files/${payload}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Set the content type specifically for this request
+        },
+      })
+      .then(function (response) {
+        // Restore the original axios.defaults.headers.common
+        axios.defaults.headers.common = { ...originalHeaders };
       })
       .catch(function (error) {
         console.log(error);
