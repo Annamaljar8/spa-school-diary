@@ -1,7 +1,7 @@
 <template>
   <div class="log-in-form-wrap">
     <div class="log-in-form">
-      <form style="width:22vw!important">
+      <form>
         <v-text-field
           v-model="email"
           label="E-mail"
@@ -71,7 +71,6 @@ import { mapActions, mapGetters } from 'vuex';
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 22vw;
   padding: 3rem;
   background-color: #e7ebef;
   border-radius: 10px;

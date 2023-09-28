@@ -4,6 +4,7 @@
       <v-sheet height="64">
         <v-toolbar
           flat
+          extended
         >
           <v-btn
             outlined
@@ -85,11 +86,12 @@
           </v-menu>
         </v-toolbar>
       </v-sheet>
-      <v-sheet height="600">
+      <v-sheet height="100%">
         <v-calendar
           ref="calendar"
           v-model="value"
           color="primary"
+          interval-height="38"
           :type="type"
           :events="this.getCalendarEvents"
           :event-ripple="false"
@@ -199,7 +201,7 @@ export default {
     data: () => ({
       value: '',
       events: [],
-      type: 'week',
+      type: 'month',
       typeToLabel: {
         month: 'Month',
         week: 'Week',

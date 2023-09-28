@@ -63,7 +63,7 @@
         </v-btn>
       </form>
       <div v-if="selectedId"
-            class="mt-8">
+            class="mt-8 mr-2">
         <v-expansion-panels 
             class="mb-6" 
             focusable

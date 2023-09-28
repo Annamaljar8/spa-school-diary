@@ -1,14 +1,15 @@
 <template>
-  <div>
+  <div style="width: 100vw;">
     <v-card>
       <v-card-title class="indigo white--text text-h5">
         User Directory
       </v-card-title>
       <v-row
-        class="pa-4 align-flex-start"
+        class="pa-4 align-flex-start flex-md-row"
         justify="space-between"
       >
-        <v-col cols="3">
+        <v-col cols="12"
+              md="3">
           <v-treeview
             :active.sync="active"
             :items="items"
@@ -30,7 +31,8 @@
 
         <v-col
           class="d-flex text-center"
-          cols="6"
+          cols="12"
+          md="6"
         >
           <v-scroll-y-transition mode="out-in">
             <div
@@ -45,7 +47,7 @@
               :key="selected.id"
               class="pt-6 mx-auto"
               flat
-              min-width="400"
+              width="100%"
             >
               <v-card-text>
                 <h3 class="text-h5 mb-2">
@@ -58,21 +60,22 @@
                 tag="v-card-text"
               >
                 <v-col
-                  class="text-right mr-4 mb-2"
+                  class="text-right mb-2"
                   tag="strong"
-                  cols="3"
+                  cols="5"
                 >
                   E-mail:
                 </v-col>
-                <v-col
-                  cols="8">
+                <v-col cols="7"
+                      class="text-left">
                   {{ selectedEmail(selected) }}
                 </v-col>
               </v-row>
             </v-card>
           </v-scroll-y-transition>
         </v-col>
-        <v-col cols="3">
+        <v-col cols="12"
+              md="3">
         <homework-list 
           :selected-id="selectedId">
         </homework-list>
