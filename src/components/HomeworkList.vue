@@ -95,6 +95,14 @@
                   </v-btn>
                 </v-col>
               </v-row>
+              <v-row>
+                <v-col
+                  v-for="(userHomeworkFile, n) in userHomework.links"
+                  :key="n"
+                >
+                <a :href="userHomeworkFile" target="blank">PDF</a>
+                </v-col>
+              </v-row>
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -129,7 +137,6 @@ export default {
     methods: {
     ...mapActions({
       postHomework: types.POST_HOMEWORK,
-      getUserHomeworkList: types.GET_USER_HOMEWORK_LIST,
       deleteHomework: types.DELETE_HOMEWORK
     }),
     addHomework(){

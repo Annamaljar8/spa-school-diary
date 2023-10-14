@@ -86,7 +86,7 @@
           </v-menu>
         </v-toolbar>
       </v-sheet>
-      <v-sheet height="100%">
+      <v-sheet height="100vh">
         <v-calendar
           ref="calendar"
           v-model="value"

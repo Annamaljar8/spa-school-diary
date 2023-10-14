@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100vw;">
     <!-- <v-card class="overflow-hidden"> -->
-      <div class="d-none d-lg-flex d-xl-flex"> 
+      <div class="d-none d-md-flex "> 
         <v-app-bar
           absolute
           color="#6A76AB"
@@ -43,7 +43,7 @@
         </v-app-bar>
       </div>
         <!-----------------mobile-------------------->
-      <div class="d-flex d-lg-none d-xl-none">
+      <div class="d-flex d-md-none ">
         <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
         <v-navigation-drawer
           v-model="drawer"
@@ -84,27 +84,26 @@
                   <router-link to="/users" class="header-new">Users</router-link>
                 </v-list-item-title>
               </v-list-item>
-
-              <div class="user-info">
-                <img
-                  class="mr-4 avatar-img"
-                  :src="userData.avatar"
-                >
-                <div class="mr-4" >
-                  {{ userData.name }}
-                </div>
-                <v-btn
-                class="mr-4 logout-btn"
-                @click="logOut"
-                >
-                  log out
-                </v-btn>
-              </div>
             </v-list-item-group>
           </v-list>
         </v-navigation-drawer>
+        <div class="user-info">
+          <img
+            class="mr-4 avatar-img"
+            :src="userData.avatar"
+          >
+          <div class="mr-4" >
+            {{ userData.name }}
+          </div>
+          <v-btn
+          class="mr-4 logout-btn"
+          @click="logOut"
+          >
+            log out
+          </v-btn>
+        </div>
       </div>
-    <v-container class="d-none d-lg-flex d-xl-flex" style="height: 24vh;"></v-container>
+    <v-container class="d-none d-md-flex" style="height: 24vh;"></v-container>
   <!-- </v-card> -->
   </div>
 </template>
@@ -173,5 +172,9 @@ export default {
     justify-content: flex-end;
     width: 60vw;
   }
+}
+
+::v-deep .v-list-item__title{
+  font-size: 1rem!important;
 }
 </style>

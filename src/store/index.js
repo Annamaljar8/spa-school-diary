@@ -17,7 +17,8 @@ export default new Vuex.Store({
     calendarEvents: [],
     calendarEvent: null,
     userHomeworkList: [],
-    homeworkFiles: []
+    homeworkFiles: [],
+    homeworkFilesLinks: []
   },
   getters: {
     [types.STATUS]: (state) => state.success,
@@ -27,6 +28,7 @@ export default new Vuex.Store({
     [types.USER_PROFILE]: (state) => state.userProfile, 
     [types.CALENDAR_EVENTS]: (state) => state.calendarEvents, 
     [types.USER_HOMEWORK_LIST]: (state) => state.userHomeworkList, 
+    [types.USER_HOMEWORK_FILES_LINKS]: (state) => state.homeworkFilesLinks, 
   },
   mutations: {
     [types.GET_USER]: (state, payload) => {
@@ -58,6 +60,9 @@ export default new Vuex.Store({
     },
     [types.SET_HOMEWORK_FILES]: (state, payload) => {
       state.homeworkFiles =  payload;
+    },
+    [types.GET_HOMEWORK_FILES_LINKS]: (state, payload) => {
+      state.homeworkFilesLinks =  payload;
     },
   },
   actions: {
@@ -178,10 +183,11 @@ export default new Vuex.Store({
         console.log(error);
       });
     },
-    [types.GET_CALENDAR_EVENTS]: async ({ commit }, payload) => {
+    [types.GET_CALENDAR_EVENTS]: async ({ commit, dispatch }, payload) => {
       await axios.get('/calendarEvents')
       .then(function (response) {
-        commit(types.SET_CALENDAR_EVENTS, response.data.data.calendarEvents) 
+        commit(types.SET_CALENDAR_EVENTS, response.data.data.calendarEvents)
+        dispatch(types.GET_USER_HOMEWORK_LIST, response.data.data.calendarEvents[0].pupil_id) 
       })
       .catch(function (error) {
         console.log(error);
@@ -253,6 +259,7 @@ export default new Vuex.Store({
       .then(function (response) {
         // Restore the original axios.defaults.headers.common
         axios.defaults.headers.common = { ...originalHeaders };
+        commit(types.GET_HOMEWORK_FILES_LINKS, response.data.data.links)
       })
       .catch(function (error) {
         console.log(error);

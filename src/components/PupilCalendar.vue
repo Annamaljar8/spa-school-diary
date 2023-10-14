@@ -1,10 +1,13 @@
 <template>
   <v-row>
     <v-col v-for="(calendarEvent, index) in getCalendarEvents"
-                        :key="calendarEvent.id">
+                        :key="calendarEvent.id"
+          cols="12"
+          sm="6"
+          md="3">
       <v-card
       class="mx-auto mt-8"
-      max-width="344"
+      max-width="300"
     >
       <v-img
         :style="{ backgroundColor: calendarEvent.color }"
