@@ -3,6 +3,9 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
+import Vue2Editor from "vue2-editor";
+
+Vue.use(Vue2Editor);
 
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale'; // Polish locale

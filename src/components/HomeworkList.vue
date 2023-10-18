@@ -34,14 +34,7 @@
             :first-day-of-week="1"
           ></v-date-picker>
         </v-menu>
-        <v-textarea
-          v-model="homeworkDescripion"
-          label="Description"
-          auto-grow
-          outlined
-          rows="4"
-          row-height="30"
-        ></v-textarea>
+        <vue-editor v-model="homeworkDescripion" />
         <v-file-input
           v-model="homeworkFiles"
           chips
@@ -73,13 +66,13 @@
             :key="i"
           >
             <v-expansion-panel-header expand-icon="mdi-menu-down">
-              {{ userHomework.deadline }}
+              <div> {{ userHomework.deadline }}  </div>
             </v-expansion-panel-header>
             <v-expansion-panel-content 
                 class="pt-4">
               <v-row class="align-center">
                 <v-col cols="9">
-                  {{ userHomework.description }}
+                  <div v-html="userHomework.description"></div>
                 </v-col>
                 <v-col cols="3"
                         class="text-right">
@@ -113,8 +106,11 @@
 <script>
 import * as types from '@/store/types'; 
 import { mapActions, mapGetters } from 'vuex';
+import { VueEditor } from "vue2-editor";
 
 export default {
+    components: { VueEditor },
+
     data: ()=> ({
       formOpen: false,
       homeworkDeadline: '',
@@ -125,6 +121,7 @@ export default {
         type: 'file', // Add the type attribute here
         accept: 'application/pdf', // You can specify the accepted file types
       },
+      content: ""
     }),
     props: {
       selectedId: Number

@@ -15,13 +15,13 @@
       >
         <v-img
           height="250"
-          :src="`src/assets/${index}.jpg`"
+          :src="`img/${index+1}.jpg`"
         />
 
         <v-card-title>{{ userHomeworkItem.deadline }}</v-card-title>
 
         <v-card-text>
-          <div>{{ userHomeworkItem.description }}.</div>
+          <div v-html="userHomeworkItem.description"></div>
         </v-card-text>
 
         <v-divider class="mx-4"></v-divider>
@@ -67,7 +67,6 @@ export default {
         '../assets/9.jpg'
       ]
       const randomIndex = Math.floor(Math.random() * 9) + 1;
-      console.log(randomIndex, imageUrls[randomIndex])
       return imageUrls[randomIndex]
     }
   },
