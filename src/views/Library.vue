@@ -7,11 +7,11 @@
 </template>
 
 <script>
+import * as types from '@/store/types'; 
+import { mapGetters } from 'vuex';
 import HeaderNew from '../components/HeaderNew'
 import LibraryStore from '../components/LibraryStore'
 import PupilLibraryStore from '../components/PupilLibraryStore'
-import * as types from '@/store/types'; 
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'Library',
@@ -21,7 +21,7 @@ export default {
     LibraryStore,
     PupilLibraryStore
   },
-    computed: {
+  computed: {
     ...mapGetters ({
       getUserType: types.USER_TYPE,
     }),

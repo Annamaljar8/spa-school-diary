@@ -5,7 +5,7 @@
         User Directory
       </v-card-title>
       <v-row
-        class="pa-4 align-flex-start flex-md-row"
+        class="pa-4 ma-0 align-flex-start flex-md-row"
         justify="space-between"
       >
         <v-col cols="12"
@@ -27,7 +27,7 @@
           </v-treeview>
         </v-col>
 
-        <v-divider vertical></v-divider>
+        <v-divider vertical class="d-none d-md-flex"></v-divider>
 
         <v-col
           class="d-flex text-center"
@@ -141,9 +141,9 @@ import HomeworkList from './HomeworkList.vue';
       }),
       selectedEmail(selected){
         let selectedEmail = ''
-        if (selected.fatherEmail !=='-' || ''){
+        if (selected.fatherEmail !=='-' && selected.fatherEmail !== '' && selected.fatherEmail !== null){
           selectedEmail = selected.fatherEmail
-        } else if (selected.motherEmail !=='-' || ''){
+        } else if (selected.motherEmail !=='-' && selected.motherEmail !== '' && selected.motherEmail !== null){
           selectedEmail = selected.motherEmail
         }
         return selectedEmail

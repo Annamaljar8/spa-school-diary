@@ -1,10 +1,11 @@
 <template>
-  <v-row class="fill-height">
-    <v-col>
-      <v-sheet height="64">
+  <div class="fill-height d-flex">
+    <v-col class="pa-0">
+      <v-sheet height="64" class="overflow-custom-hidden">
         <v-toolbar
           flat
           extended
+          class="overflow-custom"
         >
           <v-btn
             outlined
@@ -188,7 +189,7 @@
         </v-menu>
       </v-sheet>
     </v-col>
-  </v-row>
+  </div>
 </template>
 
 <script>
@@ -328,6 +329,18 @@ export default {
 
   &:hover::after {
     display: block;
+  }
+}
+
+.overflow-custom-hidden{
+  overflow: hidden;
+}
+
+.overflow-custom{
+  overflow-x: auto;
+  
+  @media (min-width: 1200px){
+    overflow: hidden;
   }
 }
 </style>

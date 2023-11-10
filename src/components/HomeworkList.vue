@@ -80,6 +80,16 @@
                     text
                     icon
                     color="blue lighten-2"
+                    @click="archiveHomeworkItem(userHomework.id)"
+                    >
+                    <v-icon color="blue darken-2">
+                      mdi-archive-arrow-down-outline
+                    </v-icon>
+                  </v-btn>
+                  <v-btn
+                    text
+                    icon
+                    color="blue lighten-2"
                     @click="deleteHomeworkItem(userHomework.id)"
                   >
                     <v-icon color="blue darken-2">
@@ -134,7 +144,8 @@ export default {
     methods: {
     ...mapActions({
       postHomework: types.POST_HOMEWORK,
-      deleteHomework: types.DELETE_HOMEWORK
+      deleteHomework: types.DELETE_HOMEWORK,
+      archiveHomework: types.ARCHIVE_HOMEWORK
     }),
     addHomework(){
       this.formOpen = true
@@ -148,6 +159,10 @@ export default {
         files: this.homeworkFiles
         })
       this.closeHomework()
+    },
+    archiveHomeworkItem(id){
+      let userId = this.selectedId
+      this.archiveHomework({id, userId})
     },
     deleteHomeworkItem(id){
       let userId = this.selectedId

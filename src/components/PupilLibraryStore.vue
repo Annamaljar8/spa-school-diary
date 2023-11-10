@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>
+    <h2 class="mx-4 text-center text-md-left">
       {{ pupilHomeworkTitle }}
     </h2>
     <!--------Homework Card------------>

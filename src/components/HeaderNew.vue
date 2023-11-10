@@ -1,6 +1,5 @@
 <template>
   <div style="width: 100vw;">
-    <!-- <v-card class="overflow-hidden"> -->
       <div class="d-none d-md-flex "> 
         <v-app-bar
           absolute
@@ -13,7 +12,8 @@
         >
           <router-link to="/dashboard" class="header-new" v-if="(getUserType === 'teacher') || (getUserType === 'pupil')">Calendar</router-link>
           <router-link to="/library" class="header-new" v-if="(getUserType === 'teacher') || (getUserType === 'pupil')">Library</router-link>
-          <router-link to="/users" class="header-new" >Users</router-link>
+          <router-link to="/users" class="header-new" v-if="(getUserType === 'teacher')">Users</router-link>
+          <router-link to="/profile" class="header-new" v-if="(getUserType === 'pupil')">Profile</router-link>
           <v-toolbar-title style="width:100%; justify-content: center;display: flex;">School Diary</v-toolbar-title>
           <template v-slot:img="{ props }">
             <v-img
@@ -21,9 +21,6 @@
               gradient="to top right, rgba(100,115,201,.7), rgba(25,32,72,.7)"
             ></v-img>
           </template>
-          <!-- <template v-slot:extension>
-            <div style="height: 5rem;"></div>
-          </template> -->
           <v-spacer></v-spacer>
           <div class="user-info">
             <img
@@ -43,7 +40,7 @@
         </v-app-bar>
       </div>
         <!-----------------mobile-------------------->
-      <div class="d-flex d-md-none ">
+      <div class="d-flex d-md-none justify-space-between align-center my-4 mx-2">
         <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
         <v-navigation-drawer
           v-model="drawer"
@@ -76,7 +73,7 @@
                 </v-list-item-title>
               </v-list-item>
 
-               <v-list-item>
+              <v-list-item>
                 <v-list-item-icon>
                   <v-icon>mdi-account-group-outline</v-icon>
                 </v-list-item-icon>
@@ -96,7 +93,7 @@
             {{ userData.name }}
           </div>
           <v-btn
-          class="mr-4 logout-btn"
+          class="mr-2 logout-btn"
           @click="logOut"
           >
             log out
@@ -104,7 +101,6 @@
         </div>
       </div>
     <v-container class="d-none d-md-flex" style="height: 24vh;"></v-container>
-  <!-- </v-card> -->
   </div>
 </template>
 
@@ -165,6 +161,8 @@ export default {
 
 }
 .user-info{
+  display: flex;
+  align-items: center;
 
   @media (min-width: 1200px) {
     display: flex;

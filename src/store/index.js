@@ -129,6 +129,7 @@ export default new Vuex.Store({
       });
     },
     [types.CREATE_AND_UPDATE_USER_PROFILE]: async ({ commit, dispatch }, payload) => {
+      console.log('payload', payload)
       await axios.put(`user/${payload.id}`, {
         name: payload.name || '',
         motherName: payload.motherName || '',
@@ -141,7 +142,7 @@ export default new Vuex.Store({
         description: payload.description || '',
       })
       .then(function (response) {
-        console.log(response)
+        console.log("response", response)
       })
       .catch(function (error) {
         console.log(error);
@@ -188,6 +189,7 @@ export default new Vuex.Store({
       .then(function (response) {
         commit(types.SET_CALENDAR_EVENTS, response.data.data.calendarEvents)
         dispatch(types.GET_USER_HOMEWORK_LIST, response.data.data.calendarEvents[0].pupil_id) 
+        dispatch(types.GET_USER_PROFILE, response.data.data.calendarEvents[0].pupil_id)
       })
       .catch(function (error) {
         console.log(error);
@@ -269,6 +271,15 @@ export default new Vuex.Store({
       await axios.get(`/homework/list/${payload}`)
       .then(function (response) {
         commit(types.GET_USER_HOMEWORK_LIST, response.data.data.homework)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    [types.ARCHIVE_HOMEWORK]: async ({ commit, dispatch }, payload) => {
+      await axios.put(`/homework/${payload.id}`)
+      .then(function (response) {
+        dispatch(types.GET_USER_HOMEWORK_LIST, payload.userId)
       })
       .catch(function (error) {
         console.log(error);
