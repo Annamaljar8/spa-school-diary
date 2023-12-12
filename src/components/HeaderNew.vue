@@ -1,27 +1,19 @@
 <template>
-  <div style="width: 100vw;">
-      <div class="d-none d-md-flex "> 
+  <div style="width: 100vw; height: 14vh;">
+      <div class="d-none d-md-flex"> 
         <v-app-bar
           absolute
           color="#6A76AB"
           dark
           shrink-on-scroll
           prominent
-          src="https://picsum.photos/1920/1080?random"
-          fade-img-on-scroll
         >
-          <router-link to="/dashboard" class="header-new" v-if="(getUserType === 'teacher') || (getUserType === 'pupil')">Calendar</router-link>
-          <router-link to="/library" class="header-new" v-if="(getUserType === 'teacher') || (getUserType === 'pupil')">Library</router-link>
-          <router-link to="/users" class="header-new" v-if="(getUserType === 'teacher')">Users</router-link>
-          <router-link to="/profile" class="header-new" v-if="(getUserType === 'pupil')">Profile</router-link>
-          <v-toolbar-title style="width:100%; justify-content: center;display: flex;">School Diary</v-toolbar-title>
-          <template v-slot:img="{ props }">
-            <v-img
-              v-bind="props"
-              gradient="to top right, rgba(100,115,201,.7), rgba(25,32,72,.7)"
-            ></v-img>
-          </template>
-          <v-spacer></v-spacer>
+          <div class="d-flex">
+            <router-link to="/dashboard" class="header-new" v-if="(getUserType === 'teacher') || (getUserType === 'pupil')">Calendar</router-link>
+            <router-link to="/library" class="header-new" v-if="(getUserType === 'teacher') || (getUserType === 'pupil')">Library</router-link>
+            <router-link to="/users" class="header-new" v-if="(getUserType === 'teacher')">Users</router-link>
+            <router-link to="/profile" class="header-new" v-if="(getUserType === 'pupil')">Profile</router-link>
+          </div>
           <div class="user-info">
             <img
               class="mr-4 avatar-img"
@@ -100,7 +92,7 @@
           </v-btn>
         </div>
       </div>
-    <v-container class="d-none d-md-flex" style="height: 24vh;"></v-container>
+    <v-container class="d-none d-md-flex" style="height: 14vh;"></v-container>
   </div>
 </template>
 
@@ -174,5 +166,14 @@ export default {
 
 ::v-deep .v-list-item__title{
   font-size: 1rem!important;
+}
+
+::v-deep .v-toolbar__content {
+  justify-content: space-between;
+  height: 90px!important;
+}
+
+::v-deep .v-toolbar{
+  height: 90px!important;
 }
 </style>

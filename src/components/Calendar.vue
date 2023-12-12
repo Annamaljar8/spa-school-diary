@@ -143,19 +143,26 @@
             </v-card-text>
             <v-card-text>
               <form v-if="createEvent !== selectedEvent.id">
-                <b>Time Start:</b> {{ selectedEvent.start }}
+                  <time-start-picker-vue 
+                      :date-start="startDateTime[0]"
+                      :time-start="startDateTime[1]"
+                      @changeTimeStart="changeTimeStartCalendar"
+                      @changeDateStart="changeDateStartCalendar"
+                  />
+            
+                <b>Start Event:</b> {{ startDateTime[0] }} {{ startDateTime[1]  }}
               </form>
               <form v-else>
-                <b>Time Start:</b>
+                <b>Time Start2:</b>
                 <v-text-field
                   v-model="selectedEvent.start"
                 ></v-text-field>
               </form>
               <form v-if="createEvent !== selectedEvent.id">
-                <b>Time End:</b> {{ selectedEvent.end }}
+                <b>Time End1:</b> {{ selectedEvent.end }}
               </form>
               <form v-else>
-                <b>Time End:</b>
+                <b>Time End2:</b>
                 <v-text-field
                   v-model="selectedEvent.end"
                 ></v-text-field>
@@ -163,15 +170,7 @@
             </v-card-text>
             <v-card-actions>
               <v-btn
-                color="success"
-                v-if="createEvent !== selectedEvent.id"
-                @click.prevent="editEvent(selectedEvent)"
-              >
-                Edit
-              </v-btn>
-              <v-btn
                 color="info"
-                v-else
                 @click.prevent="updateEvent(selectedEvent)"
               >
                 Save
@@ -197,6 +196,7 @@ import * as types from '@/store/types';
 import { mapActions, mapGetters } from 'vuex';
 
 import AddEventModal from './AddEventModal.vue';
+import TimeStartPickerVue from '../_shared/TimeStartPicker.vue';
 
 export default {
     data: () => ({
@@ -224,16 +224,30 @@ export default {
       selectedElement: null,
       selectedOpen: false,
       newEvent: true,
-      eventModalOpen: false
+      eventModalOpen: false,
+      selectedEventStart: '',
+      selectedEventTimeStart: '',
+      selectedEventDateStart: ''
     }),
     components: {
-      AddEventModal
+      AddEventModal,
+      TimeStartPickerVue
     },
     computed:{
       ...mapGetters({
         getCalendarEvents: types.CALENDAR_EVENTS,
         usersResult: types.USERS_RESULT
-      })
+      }),
+      startDateTime: {
+          get() {
+            // Getter function
+            return this.selectedEventStart.split(' ');
+          },
+          set(value) {
+            // Setter function
+            this.selectedEventStart = value.join(' ');     
+          }
+        }
     },
     methods: {
       ...mapActions({
@@ -242,14 +256,14 @@ export default {
         deleteCalendarEvent: types.DELETE_CALENDAR_EVENT,
         postCalendarEvent: types.POST_CALENDAR_EVENT,
         getUsersResult: types.GET_USERS
-      }), 
-      
+      }),    
       updateEvent(event){
+        event.start = this.selectedEventDateStart + ' ' + this.selectedEventTimeStart
+        this.selectedEventStart = event.start
         this.updateCalendarEvent(event);
         this.selectedOpen = false;
         this.createEvent = null
       },
-
       deleteEvent(id){
         this.deleteCalendarEvent(id);
         this.selectedOpen = false;     
@@ -264,18 +278,15 @@ export default {
         this.value = date
         this.type = 'day'
       },
-
       prev () {
         this.$refs.calendar.prev()
       },
       next () {
         this.$refs.calendar.next()
       },   
-      editEvent(event) {
-        this.createEvent = event.id
-      },
       showEvent ({ nativeEvent, event }) {
         nativeEvent.stopPropagation()
+        this.selectedEventStart = event.start
         const open = () => {
           this.selectedEvent = event
           this.selectedElement = nativeEvent.target
@@ -288,6 +299,12 @@ export default {
           open()
         }   
       },
+      changeTimeStartCalendar(val){
+        this.selectedEventTimeStart = val
+      },
+      changeDateStartCalendar(val){
+        this.selectedEventDateStart = val
+      }
     },
     created(){
       this.getCalendarEventsFromPromise();
