@@ -63,69 +63,13 @@
             <v-row>
               <!--------------------------------------------> 
               <h3 class="col-12">End Event</h3>
-              <v-col
-                cols="6"
-              >
-                <v-menu
-                  v-model="menu3"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="dateEnd"
-                      label="Pick Date"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="dateEnd"
-                    @input="menu3 = false"
-                    :first-day-of-week="1"
-                  ></v-date-picker>
-                </v-menu>
-              </v-col>
+              <time-end-picker-vue 
+                      :date-end="addEventDateEnd"
+                      :time-end="addEventTimeEnd"
+                      @changeTimeEnd="changeTimeEnd"
+                      @changeDateEnd="changeDateEnd"
+                  />
               <!--------------------------------------------> 
-              <v-col
-                  cols="6"
-                >
-                  <v-menu
-                    ref="menu4"
-                    v-model="menu4"
-                    :close-on-content-click="false"
-                    :nudge-right="40"
-                    :return-value.sync="timeEnd"
-                    transition="scale-transition"
-                    offset-y
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        v-model="timeEnd"
-                        label="Pick time"
-                        prepend-icon="mdi-clock-time-four-outline"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                      ></v-text-field>
-                    </template>
-                    <v-time-picker
-                      v-if="menu4"
-                      v-model="timeEnd"
-                      full-width
-                      @click:minute="$refs.menu4.save(timeEnd)"
-                      format="24hr"
-                    ></v-time-picker>
-                  </v-menu>
-                </v-col>
-                <!--------------------------------------------> 
             </v-row>
             <v-row>
               <h3 class="col-12">Pick Color</h3>
@@ -171,17 +115,18 @@ import * as types from '@/store/types';
 import { mapActions, mapGetters } from 'vuex';
 
 import TimeStartPickerVue from '../_shared/TimeStartPicker.vue';
+import TimeEndPickerVue from '../_shared/TimeEndPicker.vue';
 
   export default {
       data: () => ({
         addEventDateStart: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
         addEventTimeStart: null,
-        dateEnd: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-        timeEnd: null,
+        addEventDateEnd: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+        addEventTimeEnd: null,
         // menu: false,
         // menu2: false,
-        menu3: false,
-        menu4: false,
+        // menu3: false,
+        // menu4: false,
         color: '',
         createEvent: {
           pupil_id: '', 
@@ -201,7 +146,8 @@ import TimeStartPickerVue from '../_shared/TimeStartPicker.vue';
         usersResult: Array
       },
       components: {
-        TimeStartPickerVue
+        TimeStartPickerVue,
+        TimeEndPickerVue
       },
       computed: {
         ...mapGetters ({
@@ -234,7 +180,7 @@ import TimeStartPickerVue from '../_shared/TimeStartPicker.vue';
         },
         addEvent() {
           let startDateGlobal = new Date(this.addEventDateStart + ' ' + this.addEventTimeStart)
-          let endDateGlobal = new Date(this.dateEnd + ' ' + this.timeEnd)
+          let endDateGlobal = new Date(this.addEventDateEnd + ' ' + this.addEventTimeEnd)
           this.createEvent = {
             ...this.createEvent,
             name: this.createEvent.name,
@@ -251,6 +197,12 @@ import TimeStartPickerVue from '../_shared/TimeStartPicker.vue';
         },
         changeDateStart(val){
           this.addEventDateStart = val
+        },
+        changeTimeEnd(val){
+          this.addEventTimeEnd = val
+        },
+        changeDateEnd(val){
+          this.addEventDateEnd = val
         }
       }
     }
