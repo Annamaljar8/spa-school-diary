@@ -47,7 +47,21 @@
                       </v-list-item-title>
                     </v-list-item>
                   </v-list-group>
-                </v-list>
+              </v-list>
+            </v-row>
+            <v-row>
+              <!--------------------------------------------> 
+              <v-col>
+                <v-textarea
+                  v-model="createEvent.details"
+                  auto-grow
+                  outlined
+                  rows="1"
+                  row-height="15"
+                  label="Note"
+                ></v-textarea>
+              </v-col>
+              <!--------------------------------------------> 
             </v-row>
             <v-row>
               <!--------------------------------------------> 
@@ -184,6 +198,7 @@ import TimeEndPickerVue from '../_shared/TimeEndPicker.vue';
           this.createEvent = {
             ...this.createEvent,
             name: this.createEvent.name,
+            details: this.details,
             color: this.color,
             start: startDateGlobal.getTime(),
             end: endDateGlobal.getTime(),

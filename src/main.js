@@ -50,6 +50,7 @@ Vue.filter('parseCalendarTime', function(value) {
     return `${hour}:${minute}`
 });
 
+router.push('/');
 
 new Vue({
   router,

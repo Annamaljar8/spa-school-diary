@@ -128,17 +128,17 @@
               </v-btn>
             </v-toolbar>
             <v-card-text>
-              <form v-if="createEvent !== selectedEvent.id">
-                {{ selectedEvent.details }}
-              </form>
-              <form v-else>
-                <textarea
-                  v-model="selectedEvent.details"
-                  type="text"
-                  style="width: 100%;"
-                  min-height="100"
-                  placeholder="add note"
-                ></textarea>
+              <form>
+                <v-col>
+                  <v-textarea
+                    v-model="selectedEvent.details"
+                    auto-grow
+                    outlined
+                    rows="1"
+                    row-height="15"
+                    label="Note"
+                  ></v-textarea>
+                </v-col>
               </form>
             </v-card-text>
             <v-card-text>
