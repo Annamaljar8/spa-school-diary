@@ -67,6 +67,21 @@ export default new Vuex.Store({
   },
   actions: {
     [types.GET_USER]: async ({ dispatch, commit }, payload) => {
+       // Add a flag to track if the page is being refreshed
+      const isRefreshed = localStorage.getItem('refreshed');
+
+      if (isRefreshed) {
+        // Clear the flag to prevent future detections as a refresh
+        localStorage.removeItem('refreshed');
+
+        // Check if the current route is different from the target route
+        if (router.currentRoute.path !== '/') {
+          // Handle refresh logic (e.g., redirect to login page)
+          router.push('/');
+        }
+        return;
+      }
+      
       await axios.post('/login', {
         email: payload.email,
         password: payload.password

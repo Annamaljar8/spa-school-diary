@@ -51,6 +51,8 @@ Vue.filter('parseCalendarTime', function(value) {
 });
 
 router.push('/');
+localStorage.setItem('refreshed', 'true');
+console.log('setItem')
 
 new Vue({
   router,
