@@ -67,47 +67,42 @@ export default new Vuex.Store({
   },
   actions: {
     [types.GET_USER]: async ({ dispatch, commit }, payload) => {
-       // Add a flag to track if the page is being refreshed
       const isRefreshed = localStorage.getItem('refreshed');
 
       if (isRefreshed) {
-        // Clear the flag to prevent future detections as a refresh
-        localStorage.removeItem('refreshed');
-
-        // Check if the current route is different from the target route
+        localStorage.removeItem('refreshed')
         if (router.currentRoute.path !== '/') {
-          // Handle refresh logic (e.g., redirect to login page)
           router.push('/');
+        } else {
+          await axios.post('/login', {
+            email: payload.email,
+            password: payload.password
+          })
+          .then(function (response) {
+            commit(types.GET_USER, response.data.data.user)
+            commit(types.GET_LANGUAGES, response.data.data.languages)
+            commit(types.GET_STATUS, response.data.success)
+
+            let token = response.data.data.token;
+            commit(types.SET_TOKEN, token)
+            axios.defaults.headers.common = {
+                'Accept': 'application/json',
+                "Content-type": "application/json",
+                'Authorization': `Bearer ${token}`
+            }
+            if((response.data.success == true) && ((response.data.data.user.type === 'teacher') || (response.data.data.user.type  === 'pupil'))) {
+              router.push('dashboard')
+              dispatch(types.GET_CALENDAR_EVENTS)
+            } else if ((response.data.success == true) && (response.data.data.user.type  === 'admin')){
+              router.push('users')
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
         }
         return;
       }
-      
-      await axios.post('/login', {
-        email: payload.email,
-        password: payload.password
-      })
-      .then(function (response) {
-        commit(types.GET_USER, response.data.data.user)
-        commit(types.GET_LANGUAGES, response.data.data.languages)
-        commit(types.GET_STATUS, response.data.success)
-
-        let token = response.data.data.token;
-        commit(types.SET_TOKEN, token)
-        axios.defaults.headers.common = {
-            'Accept': 'application/json',
-            "Content-type": "application/json",
-            'Authorization': `Bearer ${token}`
-        }
-        if((response.data.success == true) && ((response.data.data.user.type === 'teacher') || (response.data.data.user.type  === 'pupil'))) {
-          router.push('dashboard')
-          dispatch(types.GET_CALENDAR_EVENTS)
-        } else if ((response.data.success == true) && (response.data.data.user.type  === 'admin')){
-          router.push('users')
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
     },
     [types.DELETE_USER]: async({commit}, payload) => {
       axios.post('/logout', {
