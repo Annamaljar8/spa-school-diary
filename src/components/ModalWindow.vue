@@ -42,7 +42,7 @@ export default {
       },
       closeModalAndDelete(){
         this.$emit('changeModalOpen', false)
-        this.$emit('cangeDeleteUserProfile', true)
+        this.$emit('changeDeleteUserProfile', true)
       }
     }
   }

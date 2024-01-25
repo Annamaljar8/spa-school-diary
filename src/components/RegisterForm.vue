@@ -43,7 +43,7 @@
 
 <script>
 import * as types from '@/store/types'; 
-import { mapActions, mapMutations, mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
   export default {
     name: 'RegisterForm',
 

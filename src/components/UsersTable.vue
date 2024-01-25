@@ -39,12 +39,25 @@
                 <svg-icon type="mdi" :path="pathDelete" ></svg-icon>
               </div>
             </td>
+            <td>
+              <div @click="reserUserPassword(item.id)">
+                <svg-icon type="mdi" :path="pathReset"></svg-icon>
+              </div>
+            </td>
           </tr>
         </tbody>
       </template>
     </v-data-table>
-    <modal-window :modal-open="modalOpen" @changeModalOpen="changeModalOpen" :is-delete-user-profile="isDeleteUserProfile" @cangeDeleteUserProfile="cangeDeleteUserProfile"></modal-window>
-    <user-profile :dialog-open="dialogOpen" @changeDialogOpen="changeDialogOpen"></user-profile>
+    <modal-window :modal-open="modalOpen" 
+                  @changeModalOpen="changeModalOpen" 
+                  :is-delete-user-profile="isDeleteUserProfile" 
+                  @changeDeleteUserProfile="changeDeleteUserProfile"></modal-window>
+    <user-profile :dialog-open="dialogOpen" 
+                  @changeDialogOpen="changeDialogOpen" ></user-profile>
+    <reset-password-modal-window :reset-modal-open="resetModalOpen"
+                                  :password="password"
+                                  @changeResetModalOpen="changeResetModalOpen"
+                                  @changeResetPassword="changeResetPassword"></reset-password-modal-window>
     <div class="text-center pt-2">
     </div>
   </div>
@@ -57,10 +70,12 @@ import { mapActions, mapGetters } from 'vuex';
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiAccountMusicOutline } from '@mdi/js';
 import { mdiDeleteOutline } from '@mdi/js';
+import { mdiLockReset } from '@mdi/js';
 
 import RegisterForm from './RegisterForm.vue';
 import UserProfile from './UserProfile.vue';
 import ModalWindow from './ModalWindow.vue';
+import ResetPasswordModalWindow from '../_shared/ResetPasswordModalWindow.vue';
 
   export default {
     name: 'UsersTable',
@@ -69,8 +84,11 @@ import ModalWindow from './ModalWindow.vue';
       formOpen: false,
       dialogOpen: false,
       modalOpen: false,
+      resetModalOpen: false,
       isDeleteUserProfile: false,
       currentId: 0,
+      currentResetId: 0,
+      password:'',
       headers: [
         {
           text: '',
@@ -99,16 +117,22 @@ import ModalWindow from './ModalWindow.vue';
         {
           text: 'Delete User',
           value: '',
+        },
+        {
+          text: 'Reset Password',
+          value: '',
         }
       ],
       pathGet: mdiAccountMusicOutline,
       pathDelete: mdiDeleteOutline,
+      pathReset: mdiLockReset
     }),
 
     components: {
       RegisterForm,
       UserProfile,
       ModalWindow,
+      ResetPasswordModalWindow,
       SvgIcon
     },
     computed:{
@@ -120,7 +144,8 @@ import ModalWindow from './ModalWindow.vue';
       ...mapActions ({
         getUsersResult: types.GET_USERS,
         getUserProfile: types.GET_USER_PROFILE,
-        deleteUserProfile: types.DELETE_USER_PROFILE
+        deleteUserProfile: types.DELETE_USER_PROFILE,
+        resetUserPassword: types.RESET_USER_PASSWORD
       }),
     
       changeFormOpen(val){
@@ -132,11 +157,18 @@ import ModalWindow from './ModalWindow.vue';
       changeModalOpen(val){
         this.modalOpen = val
       },
-      cangeDeleteUserProfile(val){
+      changeResetModalOpen(val){
+        this.resetModalOpen = val
+      },
+      changeDeleteUserProfile(val){
         this.isDeleteUserProfile = val
         if(val && this.currentId != 0){
           this.deleteUserProfile(this.currentId)
         }
+      },
+      changeResetPassword(password){
+        let id = this.currentResetId
+        this.resetUserPassword({id, password})
       },
       userProfile(id){
         this.dialogOpen = true;
@@ -146,6 +178,10 @@ import ModalWindow from './ModalWindow.vue';
         this.currentId = id;
         this.modalOpen = true;
       },
+      reserUserPassword(id){
+        this.currentResetId = id;
+        this.resetModalOpen = true;
+      }
     },
     mounted(){
       this.getUsersResult()

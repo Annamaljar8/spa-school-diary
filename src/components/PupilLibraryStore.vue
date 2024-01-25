@@ -15,7 +15,7 @@
       >
         <v-img
           height="250"
-          :src="`img/${index+1}.jpg`"
+          :src="randomPhoto()" alt="Random Photo"
         />
 
         <v-card-title>{{ userHomeworkItem.deadline }}</v-card-title>
@@ -53,8 +53,10 @@ export default {
   computed: {
     ...mapGetters ({
       userHomeworkList: types.USER_HOMEWORK_LIST
-    }),
-    ramdomPhoto() {
+    })
+  },
+  methods: {
+    randomPhoto() {
       const imageUrls = [
         '../assets/1.jpg',
         '../assets/2.jpg',
@@ -66,9 +68,9 @@ export default {
         '../assets/8.jpg',
         '../assets/9.jpg'
       ]
-      const randomIndex = Math.floor(Math.random() * 9) + 1;
+      const randomIndex = Math.floor(Math.random() * imageUrls.length);
       return imageUrls[randomIndex]
     }
-  },
+  }
 }
 </script>

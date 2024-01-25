@@ -18,7 +18,10 @@ export default new Vuex.Store({
     calendarEvent: null,
     userHomeworkList: [],
     homeworkFiles: [],
-    homeworkFilesLinks: []
+    homeworkFilesLinks: [],
+    infoMessage: '',
+    infoPopupOpen: false,
+    typeOfInfoMessage: '' // success, info, warning, error
   },
   getters: {
     [types.STATUS]: (state) => state.success,
@@ -29,6 +32,9 @@ export default new Vuex.Store({
     [types.CALENDAR_EVENTS]: (state) => state.calendarEvents, 
     [types.USER_HOMEWORK_LIST]: (state) => state.userHomeworkList, 
     [types.USER_HOMEWORK_FILES_LINKS]: (state) => state.homeworkFilesLinks, 
+    [types.GET_INFO_MESSAGE]: (state) => state.infoMessage, 
+    [types.GET_INFO_POPUP_OPEN]: (state) => state.infoPopupOpen, 
+    [types.GET_TYPE_OF_INFO_MESSAGE]: (state) => state.typeOfInfoMessage, 
   },
   mutations: {
     [types.GET_USER]: (state, payload) => {
@@ -63,6 +69,15 @@ export default new Vuex.Store({
     },
     [types.GET_HOMEWORK_FILES_LINKS]: (state, payload) => {
       state.homeworkFilesLinks =  payload;
+    },
+    [types.SET_INFO_MESSAGE]: (state, payload) => {
+      state.infoMessage =  payload;
+    },
+    [types.SET_INFO_POPUP_OPEN]: (state, payload) => {
+      state.infoPopupOpen =  payload;
+    },
+    [types.SET_TYPE_OF_INFO_MESSAGE]: (state, payload) => {
+      state.typeOfInfoMessage =  payload;
     },
   },
   actions: {
@@ -139,7 +154,6 @@ export default new Vuex.Store({
       });
     },
     [types.CREATE_AND_UPDATE_USER_PROFILE]: async ({ commit, dispatch }, payload) => {
-      console.log('payload', payload)
       await axios.put(`user/${payload.id}`, {
         name: payload.name || '',
         motherName: payload.motherName || '',
@@ -171,6 +185,19 @@ export default new Vuex.Store({
       await axios.delete(`user/${payload}`)
       .then(function (response) {
         dispatch(types.GET_USERS)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    [types.RESET_USER_PASSWORD]: async ({ commit, dispatch }, payload) => {
+      await axios.post(`/user/password/${payload.id}`, {
+        password: payload.password
+      })
+      .then(function (response) {
+        commit(types.SET_INFO_MESSAGE, response.data.message)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'success')
       })
       .catch(function (error) {
         console.log(error);

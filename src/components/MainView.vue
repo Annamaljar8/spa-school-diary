@@ -1,11 +1,11 @@
 <template>
-<div class="bg_auth">
-  <div class="bg_auth_opacity">
-    <v-container>
-      <auth />
-    </v-container>
+  <div class="bg_auth">
+    <div class="bg_auth_opacity">
+      <v-container>
+        <auth />
+      </v-container>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -19,7 +19,7 @@ export default {
 
   }),
   components: {
-    Auth,
+    Auth
   },
 
   mounted(){
