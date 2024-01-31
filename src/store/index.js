@@ -21,7 +21,8 @@ export default new Vuex.Store({
     homeworkFilesLinks: [],
     infoMessage: '',
     infoPopupOpen: false,
-    typeOfInfoMessage: '' // success, info, warning, error
+    typeOfInfoMessage: '', // success, info, warning, error
+    isMustChangePassword: 1
   },
   getters: {
     [types.STATUS]: (state) => state.success,
@@ -35,6 +36,7 @@ export default new Vuex.Store({
     [types.GET_INFO_MESSAGE]: (state) => state.infoMessage, 
     [types.GET_INFO_POPUP_OPEN]: (state) => state.infoPopupOpen, 
     [types.GET_TYPE_OF_INFO_MESSAGE]: (state) => state.typeOfInfoMessage, 
+    [types.GET_IS_MUST_CHANGE_PASSWORD]: (state) => state.isMustChangePassword, 
   },
   mutations: {
     [types.GET_USER]: (state, payload) => {
@@ -48,6 +50,9 @@ export default new Vuex.Store({
     },
     [types.SET_TOKEN]: (state, payload) => {
       state.token =  payload;
+    },
+    [types.SET_IS_MUST_CHANGE_PASSWORD]: (state, payload) => {
+      state.isMustChangePassword =  payload;
     },
     [types.GET_USERS]: (state, payload) => {
       state.usersResult = payload;
@@ -108,6 +113,7 @@ export default new Vuex.Store({
             if((response.data.success == true) && ((response.data.data.user.type === 'teacher') || (response.data.data.user.type  === 'pupil'))) {
               router.push('dashboard')
               dispatch(types.GET_CALENDAR_EVENTS)
+              dispatch(types.SET_IS_MUST_CHANGE_PASSWORD)
             } else if ((response.data.success == true) && (response.data.data.user.type  === 'admin')){
               router.push('users')
             }
@@ -118,6 +124,15 @@ export default new Vuex.Store({
         }
         return;
       }
+    },
+    [types.SET_IS_MUST_CHANGE_PASSWORD]: async ({ commit }, payload) => {
+      await axios.get('/user/ismustchangepassword')
+      .then(function (response) {
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     },
     [types.DELETE_USER]: async({commit}, payload) => {
       axios.post('/logout', {
@@ -193,6 +208,20 @@ export default new Vuex.Store({
     [types.RESET_USER_PASSWORD]: async ({ commit, dispatch }, payload) => {
       await axios.post(`/user/password/${payload.id}`, {
         password: payload.password
+      })
+      .then(function (response) {
+        commit(types.SET_INFO_MESSAGE, response.data.message)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'success')
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    [types.SET_NEW_USER_PASSWORD]: async ({commit}, payload) => {
+      await axios.post('/user/password', {
+        password: payload.newPassword,
+        oldPassword: payload.oldPassword
       })
       .then(function (response) {
         commit(types.SET_INFO_MESSAGE, response.data.message)

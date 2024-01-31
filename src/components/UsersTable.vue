@@ -40,7 +40,7 @@
               </div>
             </td>
             <td>
-              <div @click="reserUserPassword(item.id)">
+              <div @click="resetUserPasswordProfile(item.id)">
                 <svg-icon type="mdi" :path="pathReset"></svg-icon>
               </div>
             </td>
@@ -178,7 +178,7 @@ import ResetPasswordModalWindow from '../_shared/ResetPasswordModalWindow.vue';
         this.currentId = id;
         this.modalOpen = true;
       },
-      reserUserPassword(id){
+      resetUserPasswordProfile(id){
         this.currentResetId = id;
         this.resetModalOpen = true;
       }

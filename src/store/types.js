@@ -5,6 +5,9 @@ export const USER_TYPE = 'all/USER_TYPE';
 
 export const GET_LANGUAGES = 'all/GET_LANGUAGES'; 
 
+export const SET_IS_MUST_CHANGE_PASSWORD = 'all/SET_IS_MUST_CHANGE_PASSWORD'
+export const GET_IS_MUST_CHANGE_PASSWORD = 'all/GET_IS_MUST_CHANGE_PASSWORD'
+
 export const GET_STATUS = 'all/GET_STATUS';
 export const STATUS = 'all/STATUS'; 
 
@@ -18,6 +21,7 @@ export const GET_USER_PROFILE = 'all/GET_USER_PROFILE';
 export const USER_PROFILE = 'all/USER_PROFILE';
 export const DELETE_USER_PROFILE = 'all/DELETE_USER_PROFILE'; 
 export const RESET_USER_PASSWORD = 'all/RESET_USER_PASSWORD';
+export const SET_NEW_USER_PASSWORD = 'all/SET_NEW_USER_PASSWORD'
 
 export const GET_CALENDAR_EVENTS = 'all/GET_CALENDAR_EVENTS'; 
 export const SET_CALENDAR_EVENTS = 'all/SET_CALENDAR_EVENTS';

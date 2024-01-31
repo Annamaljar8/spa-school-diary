@@ -181,6 +181,8 @@
         </v-menu>
       </v-sheet>
     </v-col>
+    <reset-user-password-modal-window :reset-user-modal-open="resetUserModalOpen"
+                                  @changeResetUserModalOpen="changeResetUserModalOpen"></reset-user-password-modal-window>
   </div>
 </template>
 
@@ -191,6 +193,7 @@ import { mapActions, mapGetters } from 'vuex';
 import AddEventModal from './AddEventModal.vue';
 import TimeStartPickerVue from '../_shared/TimeStartPicker.vue';
 import TimeEndPickerVue from '../_shared/TimeEndPicker.vue';
+import ResetUserPasswordModalWindow from '../_shared/ResetUserPasswordModalWindow.vue';
 
 export default {
     data: () => ({
@@ -225,11 +228,13 @@ export default {
       selectedEventEnd: '',
       selectedEventTimeEnd: '',
       selectedEventDateEnd: '',
+      resetUserModalOpen: false
     }),
     components: {
       AddEventModal,
       TimeStartPickerVue,
-      TimeEndPickerVue
+      TimeEndPickerVue,
+      ResetUserPasswordModalWindow
     },
     watch: {
       selectedEventTimeStart(newVal){
@@ -256,7 +261,8 @@ export default {
     computed:{
       ...mapGetters({
         getCalendarEvents: types.CALENDAR_EVENTS,
-        usersResult: types.USERS_RESULT
+        usersResult: types.USERS_RESULT,
+        isMustChangePassword: types.GET_IS_MUST_CHANGE_PASSWORD
       }),
       startDateTime: {
           get() {
@@ -341,11 +347,17 @@ export default {
       },
       changeDateEndCalendar(val){
         this.selectedEventDateEnd = val
+      },
+      changeResetUserModalOpen(val){
+        this.resetUserModalOpen = false
       }
     },
     created(){
       this.getCalendarEventsFromPromise();
       this.getUsersResult()
+      if(this.isMustChangePassword){
+        this.resetUserModalOpen = true
+      }
     }
 }
 </script>
