@@ -1,13 +1,33 @@
 <template>
   <div>
     <div class="text-subtitle-1 mb-4">Zadania domowe</div>
-      <v-btn
-        v-if="selectedId"
-        class="mr-4"
-        @click="addHomework()"
-      >
-        add homework
-      </v-btn>
+    <div  v-if="selectedId"
+          class="d-flex flex-column" >
+      <v-col cols="4">
+        <v-btn
+          class="mr-4"
+          @click="addHomework()"
+        >
+          add homework
+        </v-btn>
+      </v-col>
+      <v-col cols="4">
+        <v-btn
+          class="mr-4"
+          @click="getCurrentHomeworksList()"
+        >
+          Current homeworks
+        </v-btn>
+      </v-col>
+      <v-col cols="4">
+        <v-btn
+          class="mr-4"
+          @click="getAchivedHomeworksList()"
+        >
+          Archived homeworks
+        </v-btn>
+      </v-col>
+    </div>
       <form v-if="formOpen">
         <v-menu
           v-model="menu5"
@@ -55,7 +75,8 @@
           close
         </v-btn>
       </form>
-      <div v-if="selectedId"
+      <!--Homework's List-->
+      <div v-if="homeworkListOpen && selectedId"
             class="mt-8 mr-2">
         <v-expansion-panels 
             class="mb-6" 
@@ -110,6 +131,39 @@
           </v-expansion-panel>
         </v-expansion-panels>
       </div>
+      <!--Achived Homework's List-->
+      <div v-if="archivedListOpen"
+            class="mt-8 mr-2">
+        <v-expansion-panels 
+            class="mb-6" 
+            focusable
+            >
+          <v-expansion-panel
+            v-for="(userArchiveHomework, i) in userArchiveHomeworkList"
+            :key="i"
+          >
+            <v-expansion-panel-header expand-icon="mdi-menu-down">
+              <div> {{ userArchiveHomework.deadline }}  </div>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content 
+                class="pt-4">
+              <v-row class="align-center">
+                <v-col cols="9">
+                  <div v-html="userArchiveHomework.description"></div>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col
+                  v-for="(userArchiveHomeworkFile, n) in userArchiveHomework.links"
+                  :key="n"
+                >
+                <a :href="userArchiveHomeworkFile" target="blank">PDF</a>
+                </v-col>
+              </v-row>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </div>
   </div>
 </template>
 
@@ -131,24 +185,43 @@ export default {
         type: 'file', // Add the type attribute here
         accept: 'application/pdf', // You can specify the accepted file types
       },
-      content: ""
+      content: "",
+      homeworkListOpen: false,
+      archivedListOpen: false
     }),
     props: {
       selectedId: Number
     },
     computed: {
       ...mapGetters({
-        userHomeworkList: types.USER_HOMEWORK_LIST
+        userHomeworkList: types.USER_HOMEWORK_LIST,
+        userArchiveHomeworkList: types.USER_ARCHIVE_HOMEWORK_LIST
       })
     },
     methods: {
     ...mapActions({
       postHomework: types.POST_HOMEWORK,
       deleteHomework: types.DELETE_HOMEWORK,
-      archiveHomework: types.ARCHIVE_HOMEWORK
+      archiveHomework: types.ARCHIVE_HOMEWORK,
+      getUserHomeworkList: types.GET_USER_HOMEWORK_LIST,
+      getUserArchiveHomeworkList: types.GET_USER_ARCHIVE_HOMEWORK_LIST
     }),
     addHomework(){
       this.formOpen = true
+      this.archivedListOpen = false
+      this.homeworkListOpen = false
+    },
+    getCurrentHomeworksList(){
+      this.homeworkListOpen = true
+      this.archivedListOpen = false
+      this.formOpen = false
+      this.getUserHomeworkList(this.selectedId)
+    },
+    getAchivedHomeworksList(){
+      this.archivedListOpen = true
+      this.homeworkListOpen = false
+      this.formOpen = false
+      this.getUserArchiveHomeworkList(this.selectedId)
     },
     saveHomeworkItem(){
       this.formOpen = false 
@@ -173,6 +246,12 @@ export default {
       this.homeworkDeadline = ''
       this.homeworkDescripion = ''
     }
-  }
+  },
+  watch: {
+    selectedId(newValue) {
+      this.homeworkListOpen = false
+      this.archivedListOpen = false
+    }
+  },
 }
 </script>

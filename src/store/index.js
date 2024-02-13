@@ -22,7 +22,8 @@ export default new Vuex.Store({
     infoMessage: '',
     infoPopupOpen: false,
     typeOfInfoMessage: '', // success, info, warning, error
-    isMustChangePassword: 0
+    isMustChangePassword: null,
+    userArchiveHomeworkList: []
   },
   getters: {
     [types.STATUS]: (state) => state.success,
@@ -37,6 +38,7 @@ export default new Vuex.Store({
     [types.GET_INFO_POPUP_OPEN]: (state) => state.infoPopupOpen, 
     [types.GET_TYPE_OF_INFO_MESSAGE]: (state) => state.typeOfInfoMessage, 
     [types.GET_IS_MUST_CHANGE_PASSWORD]: (state) => state.isMustChangePassword, 
+    [types.USER_ARCHIVE_HOMEWORK_LIST]: (state) => state.userArchiveHomeworkList,
   },
   mutations: {
     [types.GET_USER]: (state, payload) => {
@@ -84,6 +86,9 @@ export default new Vuex.Store({
     [types.SET_TYPE_OF_INFO_MESSAGE]: (state, payload) => {
       state.typeOfInfoMessage =  payload;
     },
+    [types.SET_USER_ARCHIVE_HOMEWORK_LIST]: (state, payload) => {
+      state.userArchiveHomeworkList =  payload;
+    },
   },
   actions: {
     [types.GET_USER]: async ({ dispatch, commit }, payload) => {
@@ -119,6 +124,12 @@ export default new Vuex.Store({
             }
           })
           .catch(function (error) {
+            commit(types.SET_INFO_MESSAGE, error)
+            commit(types.SET_INFO_POPUP_OPEN, true)
+            commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
+            setInterval(() => {
+                window.location.reload();
+              }, 3000);
             console.log(error);
           });
         }
@@ -128,9 +139,20 @@ export default new Vuex.Store({
     [types.SET_IS_MUST_CHANGE_PASSWORD]: async ({ commit }, payload) => {
       await axios.get('/user/ismustchangepassword')
       .then(function (response) {
+        commit(types.SET_INFO_MESSAGE, response.data.message)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        let messageSuccess = response.data.data.success
+        if(messageSuccess){
+          commit(types.SET_TYPE_OF_INFO_MESSAGE, 'success')
+        } else {
+          commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
+        }
         console.log(response)
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
@@ -141,6 +163,9 @@ export default new Vuex.Store({
         router.push('/')
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
         router.push('/')
       });
@@ -151,6 +176,9 @@ export default new Vuex.Store({
         commit(types.GET_USERS, response.data.data.users)
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
@@ -165,6 +193,9 @@ export default new Vuex.Store({
         dispatch(types.GET_USERS)
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
@@ -181,9 +212,19 @@ export default new Vuex.Store({
         description: payload.description || '',
       })
       .then(function (response) {
-        console.log("response", response)
+        commit(types.SET_INFO_MESSAGE, response.data.message)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        let messageSuccess = response.data.data.success
+        if(messageSuccess){
+          commit(types.SET_TYPE_OF_INFO_MESSAGE, 'success')
+        } else {
+          commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
+        }
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
@@ -193,6 +234,9 @@ export default new Vuex.Store({
         commit(types.GET_USER_PROFILE, response.data.data)
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
@@ -202,6 +246,9 @@ export default new Vuex.Store({
         dispatch(types.GET_USERS)
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
@@ -212,9 +259,17 @@ export default new Vuex.Store({
       .then(function (response) {
         commit(types.SET_INFO_MESSAGE, response.data.message)
         commit(types.SET_INFO_POPUP_OPEN, true)
-        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'success')
+        let messageSuccess = response.data.data.success
+        if(messageSuccess){
+          commit(types.SET_TYPE_OF_INFO_MESSAGE, 'success')
+        } else {
+          commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
+        }
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
@@ -226,9 +281,17 @@ export default new Vuex.Store({
       .then(function (response) {
         commit(types.SET_INFO_MESSAGE, response.data.message)
         commit(types.SET_INFO_POPUP_OPEN, true)
-        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'success')
+        let messageSuccess = response.data.data.success
+        if(messageSuccess){
+          commit(types.SET_TYPE_OF_INFO_MESSAGE, 'success')
+        } else {
+          commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
+        }
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
@@ -247,6 +310,9 @@ export default new Vuex.Store({
         dispatch(types.GET_CALENDAR_EVENTS)
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
@@ -258,6 +324,9 @@ export default new Vuex.Store({
         dispatch(types.GET_USER_PROFILE, response.data.data.calendarEvents[0].pupil_id)
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
@@ -273,8 +342,19 @@ export default new Vuex.Store({
         dialog: payload.dialog,
       })
       .then(function (response) {
+        commit(types.SET_INFO_MESSAGE, response.data.message)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        let messageSuccess = response.data.data.success
+        if(messageSuccess){
+          commit(types.SET_TYPE_OF_INFO_MESSAGE, 'success')
+        } else {
+          commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
+        }
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
@@ -284,6 +364,9 @@ export default new Vuex.Store({
         dispatch(types.GET_CALENDAR_EVENTS)
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
@@ -299,6 +382,9 @@ export default new Vuex.Store({
         dispatch(types.POST_HOMEWORK_FILES, response.data.data.id)
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
@@ -330,6 +416,9 @@ export default new Vuex.Store({
         commit(types.GET_HOMEWORK_FILES_LINKS, response.data.data.links)
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
@@ -339,6 +428,21 @@ export default new Vuex.Store({
         commit(types.GET_USER_HOMEWORK_LIST, response.data.data.homework)
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
+        console.log(error);
+      });
+    },
+    [types.GET_USER_ARCHIVE_HOMEWORK_LIST]: async ({ commit }, payload) => {
+      await axios.get(`/homework/archive/list/${payload}`)
+      .then(function (response) {
+        commit(types.SET_USER_ARCHIVE_HOMEWORK_LIST, response.data.data.homework)
+      })
+      .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
@@ -346,8 +450,19 @@ export default new Vuex.Store({
       await axios.put(`/homework/${payload.id}`)
       .then(function (response) {
         dispatch(types.GET_USER_HOMEWORK_LIST, payload.userId)
+        commit(types.SET_INFO_MESSAGE, response.data.message)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        let messageSuccess = response.data.data.success
+        if(messageSuccess){
+          commit(types.SET_TYPE_OF_INFO_MESSAGE, 'success')
+        } else {
+          commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
+        }
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
@@ -357,6 +472,9 @@ export default new Vuex.Store({
         dispatch(types.GET_USER_HOMEWORK_LIST, payload.userId)
       })
       .catch(function (error) {
+        commit(types.SET_INFO_MESSAGE, error)
+        commit(types.SET_INFO_POPUP_OPEN, true)
+        commit(types.SET_TYPE_OF_INFO_MESSAGE, 'error')
         console.log(error);
       });
     },
