@@ -19,5 +19,12 @@ export default {
   components: {
     InfoPopup
   },
+  beforeMount() {
+    setTimeout(() => {
+      if (this.$route.path !== '/') {
+        this.$router.push('/');
+      }
+    }, 0);
+  },
 };
 </script>
