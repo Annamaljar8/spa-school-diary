@@ -117,7 +117,7 @@ export default new Vuex.Store({
             }
             if((response.data.success == true) && ((response.data.data.user.type === 'teacher') || (response.data.data.user.type  === 'pupil'))) {
               router.push('dashboard')
-              dispatch(types.SET_IS_MUST_CHANGE_PASSWORD)
+              // dispatch(types.SET_IS_MUST_CHANGE_PASSWORD)
               dispatch(types.GET_CALENDAR_EVENTS)
             } else if ((response.data.success == true) && (response.data.data.user.type  === 'admin')){
               router.push('users')

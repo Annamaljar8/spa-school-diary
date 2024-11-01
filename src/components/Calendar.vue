@@ -355,9 +355,9 @@ export default {
     created(){
       this.getCalendarEventsFromPromise();
       this.getUsersResult()
-      if(this.isMustChangePassword){
-        this.resetUserModalOpen = true
-      }
+      // if(this.isMustChangePassword){
+      //   this.resetUserModalOpen = true
+      // }
     }
 }
 </script>

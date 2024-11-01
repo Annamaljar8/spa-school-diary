@@ -76,7 +76,7 @@
         </v-btn>
       </form>
       <!--Homework's List-->
-      <div v-if="homeworkListOpen && selectedId"
+      <div v-if="userHomeworkList && homeworkListOpen && selectedId"
             class="mt-8 mr-2">
         <v-expansion-panels 
             class="mb-6" 
@@ -132,7 +132,7 @@
         </v-expansion-panels>
       </div>
       <!--Achived Homework's List-->
-      <div v-if="archivedListOpen"
+      <div v-if="userArchiveHomeworkList && archivedListOpen"
             class="mt-8 mr-2">
         <v-expansion-panels 
             class="mb-6" 
@@ -186,7 +186,7 @@ export default {
         accept: 'application/pdf', // You can specify the accepted file types
       },
       content: "",
-      homeworkListOpen: false,
+      homeworkListOpen: true,
       archivedListOpen: false
     }),
     props: {
@@ -249,8 +249,9 @@ export default {
   },
   watch: {
     selectedId(newValue) {
-      this.homeworkListOpen = false
+      this.homeworkListOpen = true
       this.archivedListOpen = false
+      this.getUserHomeworkList(this.selectedId)
     }
   },
 }
